@@ -25,6 +25,7 @@ namespace SafeEntryAppThingyAssignment
         }
 
         //incomplete bool
+        //expires in 6 months, only replaceable 1 month from expiry only for residents
 
         public void IsEligibleForReplacement()
         {

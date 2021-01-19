@@ -35,6 +35,9 @@ namespace SafeEntryAppThingyAssignment
         }
 
         //incomplete
+        // visitors from new zealand and vietnam serve 0 day shn but require swab test
+        // visitors from macao serve 7 day at home and requrie swab test
+        // visitors from every other country serve 14 days at sdf and require swab test
 
         public void AssignSHNFacility(SHNFacility shn)
         {

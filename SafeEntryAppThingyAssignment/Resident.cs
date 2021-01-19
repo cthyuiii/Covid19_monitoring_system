@@ -20,6 +20,11 @@ namespace SafeEntryAppThingyAssignment
         }
 
         //incomplete double
+        // if loop required to check shnmode for calculation of swab test+ transporation
+        // formulas is as follows for resident:
+        //if none just calculate swab test: 200*(1.07)
+        //if 7 days : 200*(1.07) + 20
+        // if 14 days: 200*(1.07) + 20 + 1000
 
         public void CalculateSHNCharges()
         {

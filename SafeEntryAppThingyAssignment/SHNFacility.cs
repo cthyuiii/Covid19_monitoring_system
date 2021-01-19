@@ -4,6 +4,9 @@ using System.Text;
 
 namespace SafeEntryAppThingyAssignment
 {
+
+    //https://covidmonitoringapiprg2.azurewebsites.net/facility 
+
     class SHNFacility
     {
         public string FacilityName { get; set; }
