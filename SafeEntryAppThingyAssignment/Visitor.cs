@@ -10,7 +10,7 @@ namespace SafeEntryAppThingyAssignment
 
         public string Nationality { get; set; }
 
-        public Visitor(string passportNo, string nationality)
+        public Visitor(string name, string passportNo, string nationality):base(name)
         {
             PassportNo = passportNo;
             Nationality = nationality;

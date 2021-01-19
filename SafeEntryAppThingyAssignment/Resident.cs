@@ -12,7 +12,7 @@ namespace SafeEntryAppThingyAssignment
 
         public TraceTogetherToken Token { get; set; }
 
-        public Resident(string address, DateTime lastLeftCountry, TraceTogetherToken token)
+        public Resident(string name, string address, DateTime lastLeftCountry, TraceTogetherToken token):base(name)
         {
             Address = address;
             LastLeftCountry = lastLeftCountry;
