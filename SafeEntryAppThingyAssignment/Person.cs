@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SafeEntryAppThingyAssignment
 {
-    class Person
+    abstract class Person
     {
         public string Name { get; set; }
 
@@ -57,6 +57,8 @@ namespace SafeEntryAppThingyAssignment
             }
 
         }
+
+        public abstract double CalculateSHNCharges();
         public override string ToString()
         {
             return "Name: " + Name;
