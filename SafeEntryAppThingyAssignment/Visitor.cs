@@ -16,23 +16,34 @@ namespace SafeEntryAppThingyAssignment
             Nationality = nationality;
         }
 
-        //incomplete double
-        // if loop required to check shnmode for calculation of swab test+ transporation
-        // formulas is as follows for visitor:
-        // no shn or 7-day shn at own accomodation : 200*1.07 + 80
-        // 14 day @ shn facility : 200*1.07 + 2000 + (50 + (distance)*0.22)*1.25 (if entry 6am to 8:59am or 6pm  to 11:59pm)
-        // 14 day @ shn facility : 200*1.07 + 2000 + (50 + (distance)*0.22)*1.50 (if entry 12am(midnight) to 5:59am)
-        /*public override double CalculateSHNCharges()
+        public override double CalculateSHNCharges()
         {
-            if (14 days)
+            foreach (TravelEntry te in base.travelEntryList)
             {
-                return (200 + 2000) * 1.07;
+                if (te.IsPaid == true)
+                {
+                    Console.WriteLine("SHN Charges is already paid!");
+                    break;
+                }
+                else
+                {
+                    double days = (te.ShnEndDate - te.EntryDate).TotalDays;
+                    if (days == 14)
+                    {
+                        return (200 + 2000) * 1.07;
+                    }
+                    else if (days == 7)
+                    {
+                        return (200 + 80) * 1.07;
+                    }
+                    else
+                    {
+                        return (200) * 1.07;
+                    }
+                }
             }
-            else 
-            {
-                return (200 + 80) * 1.07;
-            }
-        }*/
+            return (0);
+        }
 
         public override string ToString()
         {

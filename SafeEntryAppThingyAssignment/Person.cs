@@ -8,9 +8,9 @@ namespace SafeEntryAppThingyAssignment
     {
         public string Name { get; set; }
 
-        List<SafeEntry> safeEntryList = new List<SafeEntry>();
+        public List<SafeEntry> safeEntryList = new List<SafeEntry>();
 
-        List<TravelEntry> travelEntryList = new List<TravelEntry>();
+        public List<TravelEntry> travelEntryList = new List<TravelEntry>();
 
         public Person()
         {
@@ -27,7 +27,7 @@ namespace SafeEntryAppThingyAssignment
             bool found = false;
             foreach (TravelEntry te in travelEntryList)
             {
-                if (t.LastCountryOfEmbarkation == te.LastCountryOfEmbarkation)
+                if (t.EntryDate == te.EntryDate)
                 {
                     Console.WriteLine("Peron Already Exists, unable to add to list");
                     found = true;
