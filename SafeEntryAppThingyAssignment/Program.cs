@@ -82,8 +82,7 @@ namespace SafeEntryAppThingyAssignment
         • You may gain up to 5 bonus marks if you propose and successfully implement an additionalfeature. Check with your tutor with your idea before implementing.*/
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            
         }
     }
 }
-xddd

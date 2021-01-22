@@ -29,9 +29,14 @@ namespace SafeEntryAppThingyAssignment
 
         // bool 
 
-        public void IsFull()
+        public bool IsFull()
         {
-
+            if (MaximumCapacity == VisitorsNow)
+            {
+                return true;
+            }
+            else
+                return false;
         }
 
         public override string ToString()
