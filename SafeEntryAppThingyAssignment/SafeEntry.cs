@@ -26,7 +26,7 @@ namespace SafeEntryAppThingyAssignment
 
         public void PerformCheckOut()
         {
-
+            Location.VisitorsNow = Location.VisitorsNow - 1;
         }
 
         public override string ToString()

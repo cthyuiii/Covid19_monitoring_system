@@ -27,7 +27,7 @@ namespace SafeEntryAppThingyAssignment
             bool found = false;
             foreach (TravelEntry te in travelEntryList)
             {
-                if (Name == te.Name) // if patient exists
+                if (t.LastCountryOfEmbarkation == te.LastCountryOfEmbarkation) // if patient exists
                 {
                     Console.WriteLine("Peron Already Exists, unable to add to list");
                     found = true;
@@ -45,7 +45,7 @@ namespace SafeEntryAppThingyAssignment
             bool found = false;
             foreach (SafeEntry se in safeEntryList)
             {
-                if (Name == se.Name) // if patient exists
+                if (s.CheckIn == se.CheckIn) // if patient exists
                 {
                     Console.WriteLine("Person Already Exists, unable to add to list");
                     found = true;
