@@ -37,5 +37,10 @@ namespace SafeEntryAppThingyAssignment
             SerialNo = serialNo;
             CollectionLocation = collectionLocation;
         }
+
+        public override string ToString()
+        {
+            return base.ToString() + "\tSerial No.: " + "\tCollection Location: " + CollectionLocation + "\tExpiry Date: " + ExpiryDate;
+        }
     }
 }

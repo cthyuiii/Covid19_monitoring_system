@@ -29,7 +29,7 @@ namespace SafeEntryAppThingyAssignment
 
         public override string ToString()
         {
-            return base.ToString() + "Passport No: " + PassportNo + " Nationality: " + Nationality;
+            return base.ToString() + "\tPassport No: " + PassportNo + "\tNationality: " + Nationality;
         }
     }
 }

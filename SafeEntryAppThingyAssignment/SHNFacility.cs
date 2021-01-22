@@ -36,11 +36,55 @@ namespace SafeEntryAppThingyAssignment
             DistFromLandCheckpoint = distFromLandCheckpoint;
         }
 
-        //double
+        //double,string,datetime
 
-        public void CalculateTravelCost()
+        public double CalculateTravelCost(string entryMode, DateTime entryDate)
         {
-
+            if (entryDate.Hour >=6 && entryDate.Hour <9 || entryDate.Hour >=18 && entryDate.Hour <0)
+            {
+                if(entryMode == "Land")
+                {
+                    return (50 + (DistFromLandCheckpoint) * 0.22)*1.25;
+                }
+                else if (entryMode == "Sea")
+                {
+                    return (50 + (DistFromSeaCheckpoint) * 0.22)*1.25;
+                }
+                if (entryMode == "Air")
+                {
+                    return (50 + (DistFromAirCheckpoint) * 0.22)*1.25;
+                }
+            }
+            else if (entryDate.Hour >= 0 && entryDate.Hour < 6)
+            {
+                if (entryMode == "Land")
+                {
+                    return (50 + (DistFromLandCheckpoint) * 0.22) * 1.50;
+                }
+                else if (entryMode == "Sea")
+                {
+                    return (50 + (DistFromSeaCheckpoint) * 0.22) * 1.50;
+                }
+                if (entryMode == "Air")
+                {
+                    return (50 + (DistFromAirCheckpoint) * 0.22) * 1.50;
+                }
+            }
+            else
+            {
+                if (entryMode == "Land")
+                {
+                    return (50 + (DistFromLandCheckpoint) * 0.22);
+                }
+                else if (entryMode == "Sea")
+                {
+                    return (50 + (DistFromSeaCheckpoint) * 0.22);
+                }
+                if (entryMode == "Air")
+                {
+                    return (50 + (DistFromAirCheckpoint) * 0.22);
+                }
+            }
         }
 
         //bool 
@@ -52,9 +96,9 @@ namespace SafeEntryAppThingyAssignment
 
         public override string ToString()
         {
-            return base.ToString() + "Facility Name: " + FacilityName + "Facility Capacity: " + FacilityCapacity + "Facility Vacancy: " 
-                + FacilityVacancy + "Distance from Air Checkpoint: " + DistFromAirCheckpoint + "Distance from Sea Checkpoint: " 
-                + DistFromSeaCheckpoint + "Distance from Land Checkpoint: " + DistFromLandCheckpoint;
+            return base.ToString() + "\tFacility Name: " + FacilityName + "\tFacility Capacity: " + FacilityCapacity + "\tFacility Vacancy: " 
+                + FacilityVacancy + "\tDistance from Air Checkpoint: " + DistFromAirCheckpoint + "\tDistance from Sea Checkpoint: " 
+                + DistFromSeaCheckpoint + "\tDistance from Land Checkpoint: " + DistFromLandCheckpoint;
         }
     }
 }

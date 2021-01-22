@@ -41,6 +41,8 @@ namespace SafeEntryAppThingyAssignment
 
         public void AssignSHNFacility(SHNFacility shn)
         {
+            ShnStay = shn;
+            shn.FacilityVacancy -= 1;
 
         }
 
@@ -48,13 +50,24 @@ namespace SafeEntryAppThingyAssignment
 
         public void CalculateSHNDuration()
         {
-
+            if (LastCountryOfEmbarkation == "New Zealand" || LastCountryOfEmbarkation == "Vietnam")
+            {
+                ShnEndDate = EntryDate.AddDays(0);
+            }
+            else if (LastCountryOfEmbarkation == "Macao SAR")
+            {
+                ShnEndDate = EntryDate.AddDays(7);
+            }
+            else
+            {
+                ShnEndDate = EntryDate.AddDays(14);
+            }
         }
 
         public override string ToString()
         {
-            return base.ToString() + "Last Country Of Embarkation: " + LastCountryOfEmbarkation + "Entry Mode: " + EntryMode
-                + "Entry Date: " + EntryDate + "SHN End Date: " + ShnEndDate + "SHN Location: " + ShnStay + "Paid?: " + IsPaid;
+            return base.ToString() + "\tLast Country Of Embarkation: " + LastCountryOfEmbarkation + "\tEntry Mode: " + EntryMode
+                + "\tEntry Date: " + EntryDate + "\tSHN End Date: " + ShnEndDate + "\tSHN Location: " + ShnStay + "\tPaid?: " + IsPaid;
         }
     }
 }
