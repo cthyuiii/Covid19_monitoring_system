@@ -36,7 +36,9 @@ namespace SafeEntryAppThingyAssignment
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
 
         public override string ToString()

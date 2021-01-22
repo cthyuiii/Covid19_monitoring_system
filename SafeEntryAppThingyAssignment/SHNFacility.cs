@@ -36,8 +36,6 @@ namespace SafeEntryAppThingyAssignment
             DistFromLandCheckpoint = distFromLandCheckpoint;
         }
 
-        //double,string,datetime
-
         public double CalculateTravelCost(string entryMode, DateTime entryDate)
         {
             if (entryDate.Hour >=6 && entryDate.Hour <9 || entryDate.Hour >=18 && entryDate.Hour <0)
@@ -89,9 +87,16 @@ namespace SafeEntryAppThingyAssignment
 
         //bool 
 
-        public void IsAvailable()
+        public bool IsAvailable()
         {
-
+            if (FacilityVacancy>=1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override string ToString()

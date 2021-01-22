@@ -24,12 +24,16 @@ namespace SafeEntryAppThingyAssignment
             ExpiryDate = expiryDate;
         }
 
-        //incomplete bool
-        //expires in 6 months, only replaceable 1 month from expiry only for residents
-
-        public void IsEligibleForReplacement()
+        public bool IsEligibleForReplacement()
         {
-
+            if (DateTime.Today >= ExpiryDate && (DateTime.Today).AddMonths(1) <= (ExpiryDate).AddMonths(1) )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void ReplaceToken(string serialNo, string collectionLocation)

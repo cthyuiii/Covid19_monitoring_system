@@ -27,7 +27,7 @@ namespace SafeEntryAppThingyAssignment
             bool found = false;
             foreach (TravelEntry te in travelEntryList)
             {
-                if (t.LastCountryOfEmbarkation == te.LastCountryOfEmbarkation) // if patient exists
+                if (t.LastCountryOfEmbarkation == te.LastCountryOfEmbarkation)
                 {
                     Console.WriteLine("Peron Already Exists, unable to add to list");
                     found = true;
