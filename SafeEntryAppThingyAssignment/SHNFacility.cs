@@ -42,45 +42,45 @@ namespace SafeEntryAppThingyAssignment
             {
                 if(entryMode == "Land")
                 {
-                    return (50 + (DistFromLandCheckpoint) * 0.22)*1.25;
+                    return ((50 + (DistFromLandCheckpoint) * 0.22)*1.25)*1.07;
                 }
                 else if (entryMode == "Sea")
                 {
-                    return (50 + (DistFromSeaCheckpoint) * 0.22)*1.25;
+                    return ((50 + (DistFromSeaCheckpoint) * 0.22)*1.25)*1.07;
                 }
                 else
                 {
-                    return (50 + (DistFromAirCheckpoint) * 0.22)*1.25;
+                    return ((50 + (DistFromAirCheckpoint) * 0.22)*1.25)*1.07;
                 }
             }
             else if (entryDate.Hour >= 0 && entryDate.Hour < 6)
             {
                 if (entryMode == "Land")
                 {
-                    return (50 + (DistFromLandCheckpoint) * 0.22) * 1.50;
+                    return ((50 + (DistFromLandCheckpoint) * 0.22) * 1.50)*1.07;
                 }
                 else if (entryMode == "Sea")
                 {
-                    return (50 + (DistFromSeaCheckpoint) * 0.22) * 1.50;
+                    return ((50 + (DistFromSeaCheckpoint) * 0.22) * 1.50)*1.07;
                 }
                 else
                 {
-                    return (50 + (DistFromAirCheckpoint) * 0.22) * 1.50;
+                    return ((50 + (DistFromAirCheckpoint) * 0.22) * 1.50)*1.07;
                 }
             }
             else
             {
                 if (entryMode == "Land")
                 {
-                    return (50 + (DistFromLandCheckpoint) * 0.22);
+                    return ((50 + (DistFromLandCheckpoint) * 0.22))*1.07;
                 }
                 else if (entryMode == "Sea")
                 {
-                    return (50 + (DistFromSeaCheckpoint) * 0.22);
+                    return ((50 + (DistFromSeaCheckpoint) * 0.22))*1.07;
                 }
                 else
                 {
-                    return (50 + (DistFromAirCheckpoint) * 0.22);
+                    return ((50 + (DistFromAirCheckpoint) * 0.22))*1.07;
                 }
             }
         }

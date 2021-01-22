@@ -19,17 +19,23 @@ namespace SafeEntryAppThingyAssignment
             Token = token;
         }
 
-        //incomplete double
-        // if loop required to check shnmode for calculation of swab test+ transporation
-        // formulas is as follows for resident:
-        //if none just calculate swab test: 200*(1.07)
-        //if 7 days : 200*(1.07) + 20
-        // if 14 days: 200*(1.07) + 20 + 1000
+        //incomplete
 
-        public override double CalculateSHNCharges()
+        /*public override double CalculateSHNCharges()
         {
-            
-        }
+            if(14 days)
+            {
+                return (200 + 20 + 1000)*1.07;
+            }
+            else if(7 days)
+            {
+                return (200 + 20) * 1.07;
+            }
+            else
+            {
+                return 200 * (1.07);
+            }
+        }*/
 
         public override string ToString()
         {
