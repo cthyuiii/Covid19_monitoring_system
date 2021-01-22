@@ -50,7 +50,7 @@ namespace SafeEntryAppThingyAssignment
                 {
                     return (50 + (DistFromSeaCheckpoint) * 0.22)*1.25;
                 }
-                if (entryMode == "Air")
+                else
                 {
                     return (50 + (DistFromAirCheckpoint) * 0.22)*1.25;
                 }
@@ -65,7 +65,7 @@ namespace SafeEntryAppThingyAssignment
                 {
                     return (50 + (DistFromSeaCheckpoint) * 0.22) * 1.50;
                 }
-                if (entryMode == "Air")
+                else
                 {
                     return (50 + (DistFromAirCheckpoint) * 0.22) * 1.50;
                 }
@@ -80,7 +80,7 @@ namespace SafeEntryAppThingyAssignment
                 {
                     return (50 + (DistFromSeaCheckpoint) * 0.22);
                 }
-                if (entryMode == "Air")
+                else
                 {
                     return (50 + (DistFromAirCheckpoint) * 0.22);
                 }
