@@ -33,11 +33,11 @@ namespace SafeEntryAppThingyAssignment
                     double days = (te.ShnEndDate - te.EntryDate).TotalDays;
                     if (days == 14)
                     {
-                        return (200 + 2000) * 1.07;
+                        return (200 + 20 + 1000) * 1.07;
                     }
                     else if (days == 7)
                     {
-                        return (200 + 80) * 1.07;
+                        return (200 + 20) * 1.07;
                     }
                     else
                     {

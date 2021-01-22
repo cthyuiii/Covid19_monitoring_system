@@ -32,14 +32,11 @@ namespace SafeEntryAppThingyAssignment
                     {
                         return (200 + 2000) * 1.07;
                     }
-                    else if (days == 7)
+                    else 
                     {
                         return (200 + 80) * 1.07;
                     }
-                    else
-                    {
-                        return (200) * 1.07;
-                    }
+                    
                 }
             }
             return (0);
