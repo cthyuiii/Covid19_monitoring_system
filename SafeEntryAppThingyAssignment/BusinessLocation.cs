@@ -23,12 +23,11 @@ namespace SafeEntryAppThingyAssignment
 
         //Class Constructor
 
-        public BusinessLocation(string businessName, string branchCode, int maximumCapcity, int visitorsNow)
+        public BusinessLocation(string businessName, string branchCode, int maximumCapcity)
         {
             BusinessName = businessName;
             BranchCode = branchCode;
             MaximumCapacity = maximumCapcity;
-            VisitorsNow = visitorsNow;
         }
 
         //Method to check if Location is at max capacity (true) or not (false)

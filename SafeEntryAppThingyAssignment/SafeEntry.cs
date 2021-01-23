@@ -23,10 +23,9 @@ namespace SafeEntryAppThingyAssignment
 
         //Class Constructor
 
-        public SafeEntry(DateTime checkIn, DateTime checkOut, BusinessLocation location)
+        public SafeEntry(DateTime checkIn, BusinessLocation location)
         {
             CheckIn = checkIn;
-            CheckOut = checkOut;
             Location = location;
         }
 

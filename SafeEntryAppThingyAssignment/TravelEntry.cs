@@ -28,15 +28,11 @@ namespace SafeEntryAppThingyAssignment
 
         //Class Constructor
 
-        public TravelEntry(string lastCountryOfEmbarkation, string entryMode, DateTime entryDate, DateTime shnEndDate, 
-            SHNFacility shnStay, bool isPaid)
+        public TravelEntry(string lastCountryOfEmbarkation, string entryMode, DateTime entryDate)
         {
             LastCountryOfEmbarkation = lastCountryOfEmbarkation;
             EntryMode = entryMode;
             EntryDate = entryDate;
-            ShnEndDate = shnEndDate;
-            ShnStay = shnStay;
-            IsPaid = isPaid;
         }
 
         //Assigns a person into a shn facility thereby reducing vacancy slots by 1

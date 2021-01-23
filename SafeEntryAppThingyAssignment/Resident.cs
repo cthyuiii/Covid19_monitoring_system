@@ -34,7 +34,7 @@ namespace SafeEntryAppThingyAssignment
 
         public override double CalculateSHNCharges()
         {
-            foreach (TravelEntry te in base.travelEntryList)
+            foreach (TravelEntry te in base.TravelEntryList)
             {
                 if (te.IsPaid == true)
                 {

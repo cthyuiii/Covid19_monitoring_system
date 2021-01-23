@@ -58,7 +58,7 @@ namespace SafeEntryAppThingyAssignment
             bool found = false;
             foreach (SafeEntry se in SafeEntryList)
             {
-                if (s.CheckIn == se.CheckIn) // if patient exists
+                if (s.CheckIn == se.CheckIn) // if person exists
                 {
                     Console.WriteLine("Person Already Exists, unable to add to list");
                     found = true;
