@@ -36,6 +36,12 @@ namespace SafeEntryAppThingyAssignment
 
             List<SHNFacility> shnList = new List<SHNFacility>();
 
+            InitDataPerson(personList);
+
+            InitDataBusinessLocation(businesslocationList);
+
+            InitSHNapiJson(shnList);
+
         }
 
         //2) Load SHN Facility Data
@@ -108,8 +114,12 @@ namespace SafeEntryAppThingyAssignment
         }
 
         //3) Method to List all Visitors
-        static void DisplayVisitors()
+        static void DisplayVisitors(List<Person> pList)
         {
+            if (Person is Visitor)
+            {
+
+            }
 
         }
 

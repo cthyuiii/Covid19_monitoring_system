@@ -11,9 +11,9 @@ namespace SafeEntryAppThingyAssignment
 
         public string Name { get; set; }
 
-        public List<SafeEntry> safeEntryList = new List<SafeEntry>();
+        public List<SafeEntry> SafeEntryList = new List<SafeEntry>();
 
-        public List<TravelEntry> travelEntryList = new List<TravelEntry>();
+        public List<TravelEntry> TravelEntryList = new List<TravelEntry>();
 
         public Person()
         {
@@ -34,7 +34,7 @@ namespace SafeEntryAppThingyAssignment
         public void AddTravelEntry(TravelEntry t)
         {
             bool found = false;
-            foreach (TravelEntry te in travelEntryList)
+            foreach (TravelEntry te in TravelEntryList)
             {
                 if (t.EntryDate == te.EntryDate)
                 {
@@ -44,7 +44,7 @@ namespace SafeEntryAppThingyAssignment
             }
             if (found == false)
             {
-                travelEntryList.Add(t);
+                TravelEntryList.Add(t);
             }
 
         }
@@ -56,7 +56,7 @@ namespace SafeEntryAppThingyAssignment
         public void AddSafeEntry(SafeEntry s)
         {
             bool found = false;
-            foreach (SafeEntry se in safeEntryList)
+            foreach (SafeEntry se in SafeEntryList)
             {
                 if (s.CheckIn == se.CheckIn) // if patient exists
                 {
@@ -66,7 +66,7 @@ namespace SafeEntryAppThingyAssignment
             }
             if (found == false)
             {
-                safeEntryList.Add(s);
+                SafeEntryList.Add(s);
             }
 
         }
