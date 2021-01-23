@@ -6,6 +6,9 @@ namespace SafeEntryAppThingyAssignment
 {
     class TravelEntry
     {
+
+        //Class Properties
+
         public string LastCountryOfEmbarkation { get; set; }
 
         public string EntryMode { get; set; }
@@ -23,6 +26,8 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
+        //Class Constructor
+
         public TravelEntry(string lastCountryOfEmbarkation, string entryMode, DateTime entryDate, DateTime shnEndDate, 
             SHNFacility shnStay, bool isPaid)
         {
@@ -34,13 +39,19 @@ namespace SafeEntryAppThingyAssignment
             IsPaid = isPaid;
         }
 
+        //Assigns a person into a shn facility thereby reducing vacancy slots by 1
+
         public void AssignSHNFacility(SHNFacility shn)
         {
             ShnStay = shn;
             shn.FacilityVacancy -= 1;
         }
 
-        //incomplete 
+        //Method to calculate SHN Duration
+        //As stated in the document
+        // Persons coming from NZ or Vietname serve 0 days as they are two countries with 0 cases at the moment
+        // As well as people from Macao serve 7 days
+        //Else any other country person has to serve 14 days
 
         public void CalculateSHNDuration()
         {
@@ -57,6 +68,8 @@ namespace SafeEntryAppThingyAssignment
                 ShnEndDate = EntryDate.AddDays(14);
             }
         }
+
+        //To String method
 
         public override string ToString()
         {

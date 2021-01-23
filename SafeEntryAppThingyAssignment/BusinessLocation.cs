@@ -6,6 +6,8 @@ namespace SafeEntryAppThingyAssignment
 {
     class BusinessLocation
     {
+        //Class Properties
+
         public string BusinessName { get; set; }
 
         public string BranchCode { get; set; }
@@ -19,6 +21,8 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
+        //Class Constructor
+
         public BusinessLocation(string businessName, string branchCode, int maximumCapcity, int visitorsNow)
         {
             BusinessName = businessName;
@@ -27,7 +31,7 @@ namespace SafeEntryAppThingyAssignment
             VisitorsNow = visitorsNow;
         }
 
-        // bool 
+        //Method to check if Location is at max capacity (true) or not (false)
 
         public bool IsFull()
         {
@@ -40,6 +44,8 @@ namespace SafeEntryAppThingyAssignment
                 return false;
             }
         }
+
+        //To string method
 
         public override string ToString()
         {

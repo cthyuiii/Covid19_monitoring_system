@@ -6,6 +6,9 @@ namespace SafeEntryAppThingyAssignment
 {
     abstract class Person
     {
+
+        //Class Properties
+
         public string Name { get; set; }
 
         public List<SafeEntry> safeEntryList = new List<SafeEntry>();
@@ -17,10 +20,16 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
+        //Class Constructor
+
         public Person(string name)
         {
             Name = name;
         }
+
+        //Method to add and check travel entry record
+        //If it exists will return error message saying record exists
+        //Else it will add it into the List
 
         public void AddTravelEntry(TravelEntry t)
         {
@@ -29,7 +38,7 @@ namespace SafeEntryAppThingyAssignment
             {
                 if (t.EntryDate == te.EntryDate)
                 {
-                    Console.WriteLine("Peron Already Exists, unable to add to list");
+                    Console.WriteLine("Person Already Exists, unable to add to list");
                     found = true;
                 }
             }
@@ -39,6 +48,10 @@ namespace SafeEntryAppThingyAssignment
             }
 
         }
+
+        //Method to add and check Safe entry record
+        //If it exists will return error message saying record exists
+        //Else it will add it into the List
 
         public void AddSafeEntry(SafeEntry s)
         {
@@ -58,7 +71,11 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
+        //Abstract Method for resident and visitor classes
+
         public abstract double CalculateSHNCharges();
+
+        //To string method
 
         public override string ToString()
         {

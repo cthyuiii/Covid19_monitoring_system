@@ -40,6 +40,8 @@ namespace SafeEntryAppThingyAssignment
 
         //2) Load SHN Facility Data
         //1.call API and populate a list
+        //Method to Load SHN data from json api as well as adding data into it
+
         static void InitSHNapiJson(List<SHNFacility> sList)
         {
             using (HttpClient client = new HttpClient())
@@ -64,6 +66,8 @@ namespace SafeEntryAppThingyAssignment
             }
         }
 
+        //Method to Load Business Location data from csv file as well as adding data into it
+
         static void InitDataBusinessLocation(List<BusinessLocation> blList)
         {
             string[] csvLines = File.ReadAllLines("BusinessLocation.csv");
@@ -76,6 +80,9 @@ namespace SafeEntryAppThingyAssignment
             }
 
         }
+
+        //Method to Load Person data from csv file as well as adding data into it
+
         static void InitDataPerson(List<Person> pList)
         {
             string[] csvLines = File.ReadAllLines("Person.csv");
@@ -100,24 +107,25 @@ namespace SafeEntryAppThingyAssignment
             }
         }
 
-        //3) List all Visitors
+        //3) Method to List all Visitors
         static void DisplayVisitors()
         {
 
         }
 
-        /*4) List Person Details
+        /*4) Method to List Person Details
             1. prompt user for name
             2. search for person
             3. list person details including TravelEntry and SafeEntry details
             i. if resident, display TraceTogetherToken details
         */
+
         static void DisplayPerson()
         {
 
         }
 
-        /*5) Assign/Replace TraceTogether Token
+        /*5) Method to Assign/Replace TraceTogether Token
             1. prompt user for name
             2. search for resident name
             3. create and assign a TraceTogetherToken object if resident has no existing token
@@ -129,13 +137,13 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
-        //6) List all Business Locations
+        //6) Method to List all Business Locations
         static void DisplayBusinessLocation()
         {
 
         }
 
-        /*7) Edit Business Location Capacity
+        /*7) Method to Edit Business Location Capacity
             1. prompt user to enter details
             2. search for business location
             3. prompt user to edit maximum capacity
@@ -146,7 +154,7 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
-        /*8) SafeEntry Check-in
+        /*8) Method for SafeEntry Check-in
             1. prompt user for name
             2. search for person
             3. list all business locations
@@ -160,7 +168,7 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
-        /*9) SafeEntry Check-out
+        /*9) Method for SafeEntry Check-out
             1. prompt user for name
             2. search for person
             3. list SafeEntry records for that person that have not been checked-out
@@ -173,13 +181,13 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
-        //10) List all SHN Facilities
+        //10) Method to List all SHN Facilities
         static void DisplaySHNFacilities()
         {
 
         }
 
-        /*11) Create Visitor
+        /*11) Method to Create Visitor Object
             1. prompt user for details
             2. create Visitor object
         */
@@ -189,7 +197,7 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
-        /*12) Create TravelEntry Record
+        /*12) Method to Create TravelEntry Record Object
             1. prompt user for name
             2. search for person
             3. prompt user for details (last country of embarkation, entry mode)
@@ -205,7 +213,7 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
-        /*13) Calculate SHN Charges
+        /*13) Method to Calculate SHN Charges
             1. prompt user for name
             2. search for person
             3. retrieve TravelEntry with SHN ended and is unpaid

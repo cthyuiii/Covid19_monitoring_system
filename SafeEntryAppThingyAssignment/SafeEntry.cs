@@ -4,8 +4,12 @@ using System.Text;
 
 namespace SafeEntryAppThingyAssignment
 {
+
     class SafeEntry
     {
+
+        //Class Properties
+
         public  DateTime CheckIn { get; set; }
 
         public DateTime CheckOut { get; set; }
@@ -17,6 +21,8 @@ namespace SafeEntryAppThingyAssignment
 
         }
 
+        //Class Constructor
+
         public SafeEntry(DateTime checkIn, DateTime checkOut, BusinessLocation location)
         {
             CheckIn = checkIn;
@@ -24,10 +30,15 @@ namespace SafeEntryAppThingyAssignment
             Location = location;
         }
 
+        //Method to call once a user performs a checkout
+        //It simply reduces the number of visitors at a location by 1
+
         public void PerformCheckOut()
         {
             Location.VisitorsNow = Location.VisitorsNow - 1;
         }
+
+        //To string method
 
         public override string ToString()
         {
