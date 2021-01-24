@@ -44,7 +44,6 @@ namespace SafeEntryAppThingyAssignment
             InitSHNapiJson(shnList);
 
             DisplayVisitors(personList);
-
         }
 
         //2) Load SHN Facility Data
@@ -113,50 +112,57 @@ namespace SafeEntryAppThingyAssignment
                 string travelEntryDate1 = data[11].ToString();
                 string travelShnEndDate1 = data[12].ToString();
                 string travelIsPaid1 = data[13].ToString();
+                DateTime lastLeftCountry = new DateTime();
+                DateTime tokenExpiryDate = new DateTime();
+                DateTime travelEntryDate = new DateTime();
+                DateTime travelShnEndDate = new DateTime();
+                bool travelIsPaid = new bool();
                 if (String.IsNullOrEmpty(lastLeftCountry1))
                 {
                 }
                 else
                 {
-                    DateTime lastLeftCountry = Convert.ToDateTime(lastLeftCountry1);
-                    if (String.IsNullOrEmpty(tokenExpiryDate1))
-                    {
-                    }
-                    else
-                    {
-                        DateTime tokenExpiryDate = Convert.ToDateTime(tokenExpiryDate1);
-                        if (String.IsNullOrEmpty(travelEntryDate1))
-                        {
-                        }
-                        else
-                        {
-                            DateTime travelEntryDate = Convert.ToDateTime(travelEntryDate1);
-                            if (String.IsNullOrEmpty(travelShnEndDate1))
-                            {
-                            }
-                            else
-                            {
-                                DateTime travelShnEndDate = Convert.ToDateTime(travelShnEndDate1);
-                                if (String.IsNullOrEmpty(travelIsPaid1))
-                                {
-                                }
-                                else
-                                {
-                                    bool travelIsPaid = Convert.ToBoolean(travelIsPaid1);
-                                    if (type == "visitor")
-                                    {
-                                        pList.Add(new Visitor(name, passportNo, nationality));
-                                        Console.WriteLine("Visitor");
-                                    }
-                                    else
-                                    {
-                                        pList.Add(new Resident(name, address, lastLeftCountry));
-                                        Console.WriteLine("Resident");
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    lastLeftCountry = Convert.ToDateTime(lastLeftCountry1);
+                }
+                if (String.IsNullOrEmpty(tokenExpiryDate1))
+                {
+                }
+                else
+                {
+                    tokenExpiryDate = Convert.ToDateTime(tokenExpiryDate1);
+                }
+                if (String.IsNullOrEmpty(travelEntryDate1))
+                {
+                }
+                else
+                {
+                    travelEntryDate = Convert.ToDateTime(travelEntryDate1);
+                }
+                if (String.IsNullOrEmpty(travelShnEndDate1))
+                {
+                }
+                else
+                {
+                    travelShnEndDate = Convert.ToDateTime(travelShnEndDate1);
+                }
+                if (String.IsNullOrEmpty(travelIsPaid1))
+                {
+                }
+                else
+                {
+                    travelIsPaid = Convert.ToBoolean(travelIsPaid1);
+                }
+                if (type == "visitor")
+                {
+                    Visitor v = new Visitor(name, passportNo, nationality);
+                    pList.Add(v);
+                    
+                }
+                else
+                {
+                    Resident r = new Resident(name, address, lastLeftCountry);
+                    pList.Add(r);
+                    r.Token = new TraceTogetherToken(tokenSerial, tokenCollectionLocation, tokenExpiryDate);
                 }
             }
         }
@@ -164,15 +170,12 @@ namespace SafeEntryAppThingyAssignment
         //3) Method to List all Visitors
         static void DisplayVisitors(List<Person> pList)
         {
-            Console.WriteLine("{0,10}  {1,10}  {2,10}", 
-                "Name", "Passport No", "Nationality");
             foreach (Person p in pList) 
             {
                 if (p is Visitor)
                 {
                     Visitor v = (Visitor)p;
-                    Console.WriteLine("{0, 1} {1, -10} {2, -15}",
-                          v.Name, v.PassportNo, v.Nationality);
+                    Console.WriteLine(v.ToString());
                 }
             }
         }
