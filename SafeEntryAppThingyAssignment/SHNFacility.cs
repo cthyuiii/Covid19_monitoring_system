@@ -110,9 +110,10 @@ namespace SafeEntryAppThingyAssignment
 
         public override string ToString()
         {
-            return "Facility Name: " + FacilityName + "\tFacility Capacity: " + FacilityCapacity + 
+            return "Facility Name: " + FacilityName + "\tFacility Capacity: " + FacilityCapacity +
+                "\tFacility Vacancy:" + FacilityVacancy +
                 "\nDistance from Air Checkpoint: " + DistFromAirCheckpoint + 
-                "\tDistance from Sea Checkpoint: " + DistFromSeaCheckpoint + 
+                "\nDistance from Sea Checkpoint: " + DistFromSeaCheckpoint + 
                 "\nDistance from Land Checkpoint: " + DistFromLandCheckpoint;
         }
     }
