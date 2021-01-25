@@ -41,56 +41,73 @@ namespace SafeEntryAppThingyAssignment
 
             InitDataBusinessLocation(businesslocationList);
 
-            InitSHNapiJson(shnList);
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://covidmonitoringapiprg2.azurewebsites.net");
+                Task<HttpResponseMessage> responseTask = client.GetAsync("/facility");
+                responseTask.Wait();
+
+                HttpResponseMessage result = responseTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    Task<string> readTask = result.Content.ReadAsStringAsync();
+                    readTask.Wait();
+                    string data = readTask.Result;
+
+                    // deserialize JSON Text string to object
+                    shnList = JsonConvert.DeserializeObject<List<SHNFacility>>(data);
+                }
+            };
 
             while (true)
             {
-                int option = DisplayMenu();
-                if (option == 1)
+                string option = DisplayMenu();
+                if (option == "1")
                 {
                     DisplayVisitors(personList);
                 }
-                else if (option == 2)
+                else if (option == "2")
                 {
                     DisplayPerson(personList);
                 }
-                else if (option == 3)
+                else if (option == "3")
                 {
                     AssignReplaceToken(personList);
                 }
-                else if (option == 4)
+                else if (option == "4")
                 {
                     DisplayBusinessLocation(businesslocationList);
                 }
-                else if (option == 5)
+                else if (option == "5")
                 {
                     EditBusinessLocationCapacity(businesslocationList);
                 }
-                else if (option == 6)
+                else if (option == "6")
                 {
                     SafeEntryCheckin(businesslocationList, personList);
                 }
-                else if (option == 7)
+                else if (option == "7")
                 {
                     SafeEntryCheckout(personList);
                 }
-                else if (option == 8)
+                else if (option == "8")
                 {
                     DisplaySHNFacilities(shnList);
                 }
-                else if (option == 9)
+                else if (option == "9")
                 {
                     CreateVisitor(personList);
                 }
-                else if (option == 10)
+                else if (option == "10")
                 {
                     CreateTravelEntry(personList, shnList);
                 }
-                else if (option == 11)
+                else if (option == "11")
                 {
                     CheckSHNCharges(personList, shnList);
                 }
-                else if (option == 0)
+                else if (option == "0")
                 {
                     break;
                 }
@@ -103,7 +120,7 @@ namespace SafeEntryAppThingyAssignment
         //1.call API and populate a list
         //Method to Load SHN data from json api as well as adding data into it
 
-        static void InitSHNapiJson(List<SHNFacility> sList)
+        /*static void InitSHNapiJson(List<SHNFacility> sList)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -121,11 +138,9 @@ namespace SafeEntryAppThingyAssignment
 
                     // deserialize JSON Text string to object
                     sList = JsonConvert.DeserializeObject<List<SHNFacility>>(data);
-                    
-
                 }
             }
-        }
+        }*/
 
         //Method to Load Business Location data from csv file as well as adding data into it
 
@@ -138,8 +153,9 @@ namespace SafeEntryAppThingyAssignment
                 string businessName = data[0];
                 string branchCode = data[1];
                 int maximumCapcity = Convert.ToInt32(data[2]);
+                blList.Add(new BusinessLocation(businessName, branchCode, maximumCapcity));
             }
-
+            
         }
 
         //Method to Load Person data from csv file as well as adding data into it
@@ -215,7 +231,12 @@ namespace SafeEntryAppThingyAssignment
                 {
                     Resident r = new Resident(name, address, lastLeftCountry);
                     pList.Add(r);
-                    r.Token = new TraceTogetherToken(tokenSerial, tokenCollectionLocation, tokenExpiryDate);
+                    if (tokenSerial == "")
+                    {
+
+                    }
+                    else
+                        r.Token = new TraceTogetherToken(tokenSerial, tokenCollectionLocation, tokenExpiryDate);
                     r.AddTravelEntry(new TravelEntry(travelEntryLastCountry, travelEntryMode, travelEntryDate));
                 }
             }
@@ -256,9 +277,8 @@ namespace SafeEntryAppThingyAssignment
                 {
                     return p;
                 }
-                else
-                    Console.WriteLine("Invalid Name!");
             }
+            Console.WriteLine("Invalid Name!");
             return null;
         }
 
@@ -290,10 +310,11 @@ namespace SafeEntryAppThingyAssignment
                             r.Token.ReplaceToken("T2", "A");
                         }
                     }
-                    else
-                        Console.WriteLine("Invalid Name!");
+                    
                 }
+
             }
+            Console.WriteLine("Invalid Name!");
         }
 
         static Resident SearchResident(List<Person> pList, string name)
@@ -307,22 +328,18 @@ namespace SafeEntryAppThingyAssignment
                     {
                         return r;
                     }
-                    else
-                        Console.WriteLine("Invalid Name!");
                 }
             }
+            Console.WriteLine("Invalid Name!");
             return null;
         }
 
         //6) Method to List all Business Locations
         static void DisplayBusinessLocation(List<BusinessLocation> blList)
         {
-            Console.WriteLine("{0,10}  {1,10}  {2,10}",
-                "Business Name", "Branch Code", "Maximum Capacity");
             foreach (BusinessLocation bl in blList)
             {
-                Console.WriteLine("{0, 1} {1, -10} {2, -15}",
-                        bl.BusinessName, bl.BranchCode, bl.MaximumCapacity);
+                Console.WriteLine(bl.ToString());
             }
         }
 
@@ -332,20 +349,29 @@ namespace SafeEntryAppThingyAssignment
             3. prompt user to edit maximum capacity
         */
 
-        static void EditBusinessLocationCapacity(List<BusinessLocation> blList)
+        static BusinessLocation EditBusinessLocationCapacity(List<BusinessLocation> blList)
         {
-            Console.Write("Enter Business Location: ");
-            string location = Console.ReadLine();
-            foreach (BusinessLocation bl in blList)
+            while (true)
             {
-                if (bl.BusinessName == location)
+                Console.Write("Enter Business Location: ");
+                string location = Console.ReadLine();
+                foreach (BusinessLocation bl in blList)
                 {
-                    Console.Write("Enter new capacity: ");
-                    int capacity = Convert.ToInt32(Console.ReadLine());
-                    bl.MaximumCapacity = capacity;
+                    if (bl.BusinessName == location)
+                    {
+                        Console.Write("Enter new capacity: ");
+                        int capacity = Convert.ToInt32(Console.ReadLine());
+                        if (capacity == bl.MaximumCapacity)
+                        {
+                            Console.WriteLine("Invalid Option: Input is same as current Capacity. Nothing to Change!");
+                        }
+                        bl.MaximumCapacity = capacity;
+                        Console.WriteLine(bl);
+                        return bl;
+                    }
                 }
-                else
-                    Console.WriteLine("Invalid Name!");
+                Console.WriteLine("Invalid Location/Location Doesn't Exist!");
+                return null;
             }
         }
 
@@ -358,27 +384,31 @@ namespace SafeEntryAppThingyAssignment
             6. add SafeEntry object to person
         */
 
-        static void SafeEntryCheckin(List<BusinessLocation> blList, List<Person> pList)
+        static Person SafeEntryCheckin(List<BusinessLocation> blList, List<Person> pList)
         {
             Console.Write("Enter Name: ");
             string name = Console.ReadLine();
             Person p = SearchPerson(pList, name);
+            Console.WriteLine("Which Location are you checking-in to?");
             DisplayBusinessLocation(blList);
             Console.Write("Enter Business Location: ");
+            string locationname = Console.ReadLine();
             foreach (BusinessLocation bl in blList)
             {
-                if (bl.BusinessName == name)
+                if (bl.BusinessName == locationname)
                 {
                     bool full = bl.IsFull();
                     if (full == false)
                     {
                         p.AddSafeEntry(new SafeEntry(DateTime.Now, bl));
                         bl.VisitorsNow += 1;
+                        Console.WriteLine("Successfully Checked-in at {0}!", locationname);
+                        return p;
                     }
                 }
-                else
-                    Console.WriteLine("Invalid Name!");
             }
+            Console.WriteLine("Invalid Name/Location!");
+            return null;
         }
 
         /*9) Method for SafeEntry Check-out
@@ -389,37 +419,43 @@ namespace SafeEntryAppThingyAssignment
             5. call PerformCheckOut() to check-out, and reduce visitorsNow by 1
         */
 
-        static void SafeEntryCheckout(List<Person> pList)
+        static SafeEntry SafeEntryCheckout(List<Person> pList)
         {
-            Console.Write("Enter Name: ");
-            string name = Console.ReadLine();
-            Person p = SearchPerson(pList, name);
-            for (int i=0; i<p.SafeEntryList.Count; i++)
+            while (true)
             {
-                Console.WriteLine(p.SafeEntryList[i]);
-            }
-            Console.Write("Enter Record: ");
-            DateTime record = Convert.ToDateTime(Console.ReadLine());
-            foreach (SafeEntry s in p.SafeEntryList)
-            {
-                if (record == s.CheckIn)
+                try
                 {
-                    s.PerformCheckOut();
+                    Console.Write("Enter Name: ");
+                    string name = Console.ReadLine();
+                    Person p = SearchPerson(pList, name);
+                    for (int i = 0; i < p.SafeEntryList.Count; i++)
+                    {
+                        Console.WriteLine(p.SafeEntryList[i]);
+                    }
+                    Console.Write("Enter Record in the format dd/mm/yyyy: ");
+                    DateTime record = Convert.ToDateTime(Console.ReadLine());
+                    foreach (SafeEntry s in p.SafeEntryList)
+                    {
+                        Console.WriteLine("Successfully Checked-out!");
+                        s.PerformCheckOut();
+                        return s;                       
+                    }
+                    return null;
                 }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Invalid Record!");                    
+                } 
             }
         }
 
         //10) Method to List all SHN Facilities
         static void DisplaySHNFacilities(List<SHNFacility> shnList) 
-        {
-            Console.WriteLine("{0,10}  {1,10}  {2,10}  {3 10}  {4 10}",
-                "Name", "Capacity", "Distance from Air Checkpoint",
-                "Distance from Sea Checkpoint", "Distance from Land Checkpoint");
+        {            
             foreach (SHNFacility shn in shnList)
             {
-                Console.WriteLine("{0, 1}  {1, -10}  {2, -15}  {3, 10}  {4, 10}",
-                        shn.FacilityName, shn.FacilityCapacity, shn.DistFromAirCheckpoint,
-                        shn.DistFromSeaCheckpoint, shn.DistFromLandCheckpoint);
+                Console.WriteLine(shn.ToString());
             }
         }
 
@@ -436,6 +472,7 @@ namespace SafeEntryAppThingyAssignment
             string passport = Console.ReadLine();
             Console.Write("Enter Nationality: ");
             string nationality = Console.ReadLine();
+            Console.WriteLine("Succesfully Created!");
             pList.Add(new Visitor(name, passport, nationality));
         }
 
@@ -450,42 +487,53 @@ namespace SafeEntryAppThingyAssignment
             8. call AddTravelEntry() in Person to assign the TravelEntry object
         */
 
-        static void CreateTravelEntry(List<Person> pList, List<SHNFacility> shnList)
+        static Person CreateTravelEntry(List<Person> pList, List<SHNFacility> shnList)
         {
             Console.Write("Enter Name: ");
             string name = Console.ReadLine();
             Person p = SearchPerson(pList, name);
+            if (p == null)
+            {
+                return null;
+            }
+            else 
+            {
             Console.Write("Enter your last country of embarkation: ");
             string last_country = Console.ReadLine();
             Console.Write("Enter your entry mode: ");
             string entry_mode = Console.ReadLine();
             p.AddTravelEntry(new TravelEntry(last_country, entry_mode, DateTime.Now));
-            foreach (TravelEntry t in p.TravelEntryList)
-            {
-                t.CalculateSHNDuration();
-                if ((t.ShnEndDate - t.EntryDate).TotalDays == 14)
+                foreach (TravelEntry t in p.TravelEntryList)
                 {
-                    DisplaySHNFacilities(shnList);
-                    Console.Write("Choose SHN Facility: ");
-                    string f_name = Console.ReadLine();
-                    foreach (SHNFacility shn in shnList)
+                    t.CalculateSHNDuration();
+                    if ((t.ShnEndDate - t.EntryDate).TotalDays == 14)
                     {
-                        bool available = shn.IsAvailable();
-                        if (available)
+                        DisplaySHNFacilities(shnList);
+                        Console.Write("Choose SHN Facility: ");
+                        string f_name = Console.ReadLine();
+                        foreach (SHNFacility shn in shnList)
                         {
                             if (shn.FacilityName == f_name)
                             {
-                                t.AssignSHNFacility(shn);
+                                bool available = shn.IsAvailable();
+                                if (available)
+                                {
+                                    t.AssignSHNFacility(shn);
+
+                                }
+                                else
+                                { 
+                                    Console.WriteLine("Invalid Name!");
+                                }
                             }
                             else
-                                Console.WriteLine("Invalid Name!");
+                                Console.WriteLine("Facility Not Available!");
                         }
-                        else
-                            Console.WriteLine("Facility Not Available!");
+                        p.AddTravelEntry(t);
                     }
-                    p.AddTravelEntry(t);
                 }
             }
+            return null;
         }
 
         /*13) Method to Calculate SHN Charges
@@ -541,18 +589,19 @@ namespace SafeEntryAppThingyAssignment
 
         // Method to create and display menu
         
-        static int DisplayMenu()
+        static string DisplayMenu()
         {
             Console.WriteLine("---------------- MENU ----------------\n" +
                     "[1] List all visitors\n[2] List Person Details\n" +
                     "[3] Assign/Replace TraceTogether Token\n[4] List all Business Locations\n" +
                     "[5] Edit Business Location Capacity\n[6] SafeEntry Check-in\n" +
                     "[7] SafeEntry Check-out\n[8] List all SHN Facilities\n" +
-                    "[9] Create Visitor\n [10] Create TravelEntry Record\n" +
+                    "[9] Create Visitor\n" +
+                    "[10] Create TravelEntry Record\n" +
                     "[11] Calculate SHN Charges\n" +
                     "[0] Exit\n-------------------------------------");
             Console.Write("Enter your option: ");
-            int option = Convert.ToInt32(Console.ReadLine());
+            string option = Console.ReadLine();
             return option;
         }
     }

@@ -41,7 +41,7 @@ namespace SafeEntryAppThingyAssignment
 
         public override string ToString()
         {
-            return base.ToString() + "\tCheck In Time: " + CheckIn + "\tCheck Out Time: " + CheckOut + "\tLocation: " + Location;
+            return "Check In Time: " + CheckIn + "   \tCheck Out Time: " + CheckOut + "   \tLocation: " + Location;
         }
     }
 }

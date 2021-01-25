@@ -48,8 +48,8 @@ namespace SafeEntryAppThingyAssignment
 
         public override string ToString()
         {
-            return base.ToString() + "\tBusiness Name: " + BusinessName + "\tBranch Code: " + BranchCode + "\tMax Capacity: "
-                + MaximumCapacity + "\tNo of Visitors: " + VisitorsNow ;
+            return "Business Name: " + BusinessName + "   \tBranch Code: " + BranchCode + "   \tMax Capacity: "
+                + MaximumCapacity + "   \tNo of Visitors: " + VisitorsNow ;
         }
     }
 }
