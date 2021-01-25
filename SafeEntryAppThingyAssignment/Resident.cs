@@ -65,7 +65,7 @@ namespace SafeEntryAppThingyAssignment
 
         public override string ToString()
         {
-            return base.ToString() + "\tAddress: " + Address + "\tLast Left Country: " + LastLeftCountry + "\tToken: " + Token;
+            return base.ToString() + "\tAddress: " + Address + "\tLast Left Country: " + LastLeftCountry + "\nToken: " + Token;
         }
     }
 }

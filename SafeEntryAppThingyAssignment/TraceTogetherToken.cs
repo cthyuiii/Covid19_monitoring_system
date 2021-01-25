@@ -37,7 +37,7 @@ namespace SafeEntryAppThingyAssignment
 
         public bool IsEligibleForReplacement()
         {
-            if (DateTime.Today >= ExpiryDate && (DateTime.Today).AddMonths(1) <= (ExpiryDate).AddMonths(1) )
+            if (DateTime.Today >= ExpiryDate || (DateTime.Today).AddMonths(1) <= (ExpiryDate).AddMonths(1) )
             {
                 return true;
             }
@@ -59,7 +59,7 @@ namespace SafeEntryAppThingyAssignment
 
         public override string ToString()
         {
-            return base.ToString() + "\tSerial No.: " + "\tCollection Location: " + CollectionLocation + "\tExpiry Date: " + ExpiryDate;
+            return "Serial No: " + SerialNo + "\tCollection Location: " + CollectionLocation + "\tExpiry Date: " + ExpiryDate;
         }
     }
 }

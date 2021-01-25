@@ -116,32 +116,6 @@ namespace SafeEntryAppThingyAssignment
             }
         }
 
-        //2) Load SHN Facility Data
-        //1.call API and populate a list
-        //Method to Load SHN data from json api as well as adding data into it
-
-        /*static void InitSHNapiJson(List<SHNFacility> sList)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("https://covidmonitoringapiprg2.azurewebsites.net");
-                Task<HttpResponseMessage> responseTask = client.GetAsync("/facility");
-                responseTask.Wait();
-
-                HttpResponseMessage result = responseTask.Result;
-
-                if (result.IsSuccessStatusCode)
-                {
-                    Task<string> readTask = result.Content.ReadAsStringAsync();
-                    readTask.Wait();
-                    string data = readTask.Result;
-
-                    // deserialize JSON Text string to object
-                    sList = JsonConvert.DeserializeObject<List<SHNFacility>>(data);
-                }
-            }
-        }*/
-
         //Method to Load Business Location data from csv file as well as adding data into it
 
         static void InitDataBusinessLocation(List<BusinessLocation> blList)
@@ -236,7 +210,9 @@ namespace SafeEntryAppThingyAssignment
 
                     }
                     else
+                    {
                         r.Token = new TraceTogetherToken(tokenSerial, tokenCollectionLocation, tokenExpiryDate);
+                    }
                     r.AddTravelEntry(new TravelEntry(travelEntryLastCountry, travelEntryMode, travelEntryDate));
                 }
             }
@@ -289,7 +265,7 @@ namespace SafeEntryAppThingyAssignment
             4. replace token if it meets the criteria stipulated in the background brief
         */
 
-        static void AssignReplaceToken(List<Person> pList)
+        static Person AssignReplaceToken(List<Person> pList)
         {
             Console.Write("Enter name: ");
             string name = Console.ReadLine();
@@ -303,18 +279,36 @@ namespace SafeEntryAppThingyAssignment
                         if (r.Token == null)
                         {
                             r.Token = new TraceTogetherToken("T1", "C", new DateTime(2022, 1, 1));
+                            Console.WriteLine("TraceTogether Token assigned!");
                         }
-                        bool replace = r.Token.IsEligibleForReplacement();
-                        if (replace == true)
+                        else
                         {
-                            r.Token.ReplaceToken("T2", "A");
+                            bool replace = r.Token.IsEligibleForReplacement();
+                            if (replace == true)
+                            {
+                                r.Token.ReplaceToken("T2", "A");
+                                Console.WriteLine("TraceTogether Token replaced!");
+                            }
+                            else
+                            {
+                                Console.WriteLine("TraceTogether not eligible for replacement!");
+                            }
                         }
+                        return p;
                     }
-                    
                 }
-
+                else if (p is Visitor)
+                {
+                    Console.WriteLine("Person is visitor, unable to assign token!");
+                    return p;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Name!");
+                    return null;
+                }
             }
-            Console.WriteLine("Invalid Name!");
+            return null;
         }
 
         static Resident SearchResident(List<Person> pList, string name)
@@ -579,6 +573,40 @@ namespace SafeEntryAppThingyAssignment
                         {
                             Console.WriteLine(v.TravelEntryList[0]);
                             double charge = v.CalculateSHNCharges();
+                            Console.WriteLine("Make Payment of {0}", charge);
+                        }
+                    }
+                    te.IsPaid = true;
+                }
+            }
+            else
+            {
+                Resident r = (Resident)p;
+                foreach (TravelEntry te in r.TravelEntryList)
+                {
+                    bool paid = te.IsPaid;
+                    if (paid)
+                    {
+                        Console.WriteLine("Paid!");
+                    }
+                    else
+                    {
+                        if (te.ShnEndDate < DateTime.Now)
+                        {
+                            Console.WriteLine(r.TravelEntryList[0]);
+                            if ((te.ShnEndDate - te.EntryDate).TotalDays == 14)
+                            {
+                                foreach (SHNFacility shn in shnList)
+                                {
+                                    double charge = r.CalculateSHNCharges() + shn.CalculateTravelCost(te.EntryMode, te.EntryDate);
+                                    Console.WriteLine("Make Payment of {0}", charge);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine(r.TravelEntryList[0]);
+                            double charge = r.CalculateSHNCharges();
                             Console.WriteLine("Make Payment of {0}", charge);
                         }
                     }

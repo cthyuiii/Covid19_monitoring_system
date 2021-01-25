@@ -79,7 +79,7 @@ namespace SafeEntryAppThingyAssignment
 
         public override string ToString()
         {
-            return "\tName: " + Name;
+            return "Name: " + Name;
         }
     }
 
