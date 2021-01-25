@@ -43,7 +43,60 @@ namespace SafeEntryAppThingyAssignment
 
             InitSHNapiJson(shnList);
 
-            DisplayVisitors(personList);
+            while (true)
+            {
+                int option = DisplayMenu();
+                if (option == 1)
+                {
+                    DisplayVisitors(personList);
+                }
+                else if (option == 2)
+                {
+                    DisplayPerson(personList);
+                }
+                else if (option == 3)
+                {
+                    AssignReplaceToken(personList);
+                }
+                else if (option == 4)
+                {
+                    DisplayBusinessLocation(businesslocationList);
+                }
+                else if (option == 5)
+                {
+                    EditBusinessLocationCapacity(businesslocationList);
+                }
+                else if (option == 6)
+                {
+                    SafeEntryCheckin(businesslocationList, personList);
+                }
+                else if (option == 7)
+                {
+                    SafeEntryCheckout(personList);
+                }
+                else if (option == 8)
+                {
+                    DisplaySHNFacilities(shnList);
+                }
+                else if (option == 9)
+                {
+                    CreateVisitor(personList);
+                }
+                else if (option == 10)
+                {
+                    CreateTravelEntry(personList, shnList);
+                }
+                else if (option == 11)
+                {
+                    CheckSHNCharges(personList, shnList);
+                }
+                else if (option == 0)
+                {
+                    break;
+                }
+                else
+                    Console.WriteLine("Invalid option!");
+            }
         }
 
         //2) Load SHN Facility Data
@@ -156,13 +209,14 @@ namespace SafeEntryAppThingyAssignment
                 {
                     Visitor v = new Visitor(name, passportNo, nationality);
                     pList.Add(v);
-                    
+                    v.AddTravelEntry(new TravelEntry(travelEntryLastCountry, travelEntryMode, travelEntryDate));
                 }
                 else
                 {
                     Resident r = new Resident(name, address, lastLeftCountry);
                     pList.Add(r);
                     r.Token = new TraceTogetherToken(tokenSerial, tokenCollectionLocation, tokenExpiryDate);
+                    r.AddTravelEntry(new TravelEntry(travelEntryLastCountry, travelEntryMode, travelEntryDate));
                 }
             }
         }
@@ -278,13 +332,13 @@ namespace SafeEntryAppThingyAssignment
             3. prompt user to edit maximum capacity
         */
 
-        static void EditBusinessLocationCapacity(List<BusinessLocation> blList, string name)
+        static void EditBusinessLocationCapacity(List<BusinessLocation> blList)
         {
             Console.Write("Enter Business Location: ");
             string location = Console.ReadLine();
             foreach (BusinessLocation bl in blList)
             {
-                if (bl.BusinessName == name)
+                if (bl.BusinessName == location)
                 {
                     Console.Write("Enter new capacity: ");
                     int capacity = Convert.ToInt32(Console.ReadLine());
@@ -485,5 +539,21 @@ namespace SafeEntryAppThingyAssignment
             }
         }
 
+        // Method to create and display menu
+        
+        static int DisplayMenu()
+        {
+            Console.WriteLine("---------------- MENU ----------------\n" +
+                    "[1] List all visitors\n[2] List Person Details\n" +
+                    "[3] Assign/Replace TraceTogether Token\n[4] List all Business Locations\n" +
+                    "[5] Edit Business Location Capacity\n[6] SafeEntry Check-in\n" +
+                    "[7] SafeEntry Check-out\n[8] List all SHN Facilities\n" +
+                    "[9] Create Visitor\n [10] Create TravelEntry Record\n" +
+                    "[11] Calculate SHN Charges\n" +
+                    "[0] Exit\n-------------------------------------");
+            Console.Write("Enter your option: ");
+            int option = Convert.ToInt32(Console.ReadLine());
+            return option;
+        }
     }
 }
