@@ -24,12 +24,10 @@ namespace SafeEntryAppThingyAssignment
         static void Main(string[] args)
         {
             List<BusinessLocation> businesslocationList = new List<BusinessLocation>();
-           
+
             List<Person> personList = new List<Person>();
 
             List<SHNFacility> shnList = new List<SHNFacility>();
-
-            InitDataPerson(personList);
 
             InitDataBusinessLocation(businesslocationList);
 
@@ -49,8 +47,15 @@ namespace SafeEntryAppThingyAssignment
 
                     // deserialize JSON Text string to object
                     shnList = JsonConvert.DeserializeObject<List<SHNFacility>>(data);
+
+                    foreach (SHNFacility shn in shnList)
+                    {
+                        shn.FacilityVacancy = shn.FacilityCapacity;
+                    }
                 }
             };
+
+            InitDataPerson(personList, shnList);
 
             while (true)
             {
@@ -124,12 +129,12 @@ namespace SafeEntryAppThingyAssignment
                 int maximumCapcity = Convert.ToInt32(data[2]);
                 blList.Add(new BusinessLocation(businessName, branchCode, maximumCapcity));
             }
-            
+
         }
 
         //Method to Load Person data from csv file as well as adding data into it
 
-        static void InitDataPerson(List<Person> pList)
+        static void InitDataPerson(List<Person> pList, List<SHNFacility> shnList)
         {
             string[] csvLines = File.ReadAllLines("Person.csv");
             for (int i = 1; i < csvLines.Length; i++)
@@ -195,6 +200,18 @@ namespace SafeEntryAppThingyAssignment
                     Visitor v = new Visitor(name, passportNo, nationality);
                     pList.Add(v);
                     v.AddTravelEntry(new TravelEntry(travelEntryLastCountry, travelEntryMode, travelEntryDate));
+                    foreach (TravelEntry te in v.TravelEntryList)
+                    {
+                        te.ShnEndDate = travelShnEndDate;
+                        te.IsPaid = travelIsPaid;
+                        foreach (SHNFacility shn in shnList)
+                        {
+                            if (facilityName == shn.FacilityName)
+                            {
+                                te.ShnStay = shn;
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -202,13 +219,24 @@ namespace SafeEntryAppThingyAssignment
                     pList.Add(r);
                     if (tokenSerial == "")
                     {
-
                     }
                     else
                     {
                         r.Token = new TraceTogetherToken(tokenSerial, tokenCollectionLocation, tokenExpiryDate);
                     }
                     r.AddTravelEntry(new TravelEntry(travelEntryLastCountry, travelEntryMode, travelEntryDate));
+                    foreach (TravelEntry te in r.TravelEntryList)
+                    {
+                        te.ShnEndDate = travelShnEndDate;
+                        te.IsPaid = travelIsPaid;
+                        foreach (SHNFacility shn in shnList)
+                        {
+                            if (facilityName == shn.FacilityName)
+                            {
+                                te.ShnStay = shn;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -216,7 +244,7 @@ namespace SafeEntryAppThingyAssignment
         //3) Method to List all Visitors
         static void DisplayVisitors(List<Person> pList)
         {
-            foreach (Person p in pList) 
+            foreach (Person p in pList)
             {
                 if (p is Visitor)
                 {
@@ -237,7 +265,16 @@ namespace SafeEntryAppThingyAssignment
         {
             Console.Write("Enter Name (Be mindful of capitalization. Enter 0 to exit option): ");
             string name = Console.ReadLine();
-            Console.WriteLine(SearchPerson(pList, name));
+            Person p = SearchPerson(pList, name);
+            Console.WriteLine(p);
+            foreach (SafeEntry se in p.SafeEntryList)
+            {
+                Console.WriteLine(se);
+            }
+            foreach (TravelEntry te in p.TravelEntryList)
+            {
+                Console.WriteLine(te);
+            }
         }
 
         static Person SearchPerson(List<Person> pList, string name)
@@ -257,6 +294,7 @@ namespace SafeEntryAppThingyAssignment
                 }
                 Console.WriteLine("Invalid Name!");
                 Console.WriteLine("Please Re-Enter");
+                return null;
             }
         }
 
@@ -273,49 +311,56 @@ namespace SafeEntryAppThingyAssignment
             {
                 Console.Write("Enter name (Be mindful of capitalization. Enter 0 to exit option): ");
                 string name = Console.ReadLine();
-                foreach (Person p in pList)
+                if (name == "0")
                 {
-                    if (p is Resident)
+                    return null;
+                }
+                else
+                {
+                    foreach (Person p in pList)
                     {
-                        Resident r = (Resident)p;
-                        if (r.Name == name)
+                        if (p.Name == name)
                         {
-                            if (r.Token == null)
+                            if (p is Resident)
                             {
-                                r.Token = new TraceTogetherToken("T1", "C", DateTime.Now.AddMonths(6));
-                                Console.WriteLine("TraceTogether Token assigned!");
-                            }
-                            else
-                            {
-                                bool replace = r.Token.IsEligibleForReplacement();
-                                if (replace == true)
+                                Resident r = (Resident)p;
+                                if (r.Token == null)
                                 {
-                                    r.Token.ReplaceToken("T2", "A");
-                                    Console.WriteLine("TraceTogether Token replaced!");
+                                    r.Token = new TraceTogetherToken("T1", "C", DateTime.Now.AddMonths(6));
+                                    Console.WriteLine("TraceTogether Token assigned!");
+                                    return p;
                                 }
                                 else
                                 {
-                                    Console.WriteLine("TraceTogether not eligible for replacement!");
-                                    Console.WriteLine("Please Re-apply for it on gov.sg");
+                                    bool replace = r.Token.IsEligibleForReplacement();
+                                    if (replace == true)
+                                    {
+                                        r.Token.ExpiryDate = DateTime.Now.AddMonths(6);
+                                        r.Token.ReplaceToken("T2", "A");
+                                        Console.WriteLine("TraceTogether Token replaced!");
+                                        return p;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("TraceTogether not eligible for replacement!");
+                                        Console.WriteLine("Please Re-apply for it on gov.sg");
+                                        return p;
+                                    }
                                 }
                             }
-                            break;
+                            else if (p is Visitor)
+                            {
+                                Visitor v = (Visitor)p;
+                                if (v.Name == name)
+                                {
+                                    Console.WriteLine("Person is a Visitor, unable to assign token!");
+                                    return p;
+                                }
+                            }
                         }
                     }
-                    else if (p is Visitor)
-                    {
-                        Console.WriteLine("Person is a Visitor, unable to assign token!");
-                        break;
-                    }
-                    else if (name == "0")
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid Name!");
-                        Console.WriteLine("Please Re-Enter");
-                    }
+                    Console.WriteLine("Invalid Name!");
+                    Console.WriteLine("Please Re-Enter");
                 }
             }
         }
@@ -343,6 +388,10 @@ namespace SafeEntryAppThingyAssignment
                 {
                     Console.Write("Enter Business Location (Be mindful of capitalization. Enter 0 to exit option): ");
                     string location = Console.ReadLine();
+                    if (location == "0")
+                    {
+                        return null;
+                    }
                     foreach (BusinessLocation bl in blList)
                     {
                         if (bl.BusinessName == location)
@@ -358,25 +407,23 @@ namespace SafeEntryAppThingyAssignment
                                 }
                                 else if (capacity == 0)
                                 {
-                                    break;
+                                    return null;
                                 }
-                                bl.MaximumCapacity = capacity;
-                                Console.WriteLine(bl);
-                                break;
+                                else
+                                {
+                                    bl.MaximumCapacity = capacity;
+                                    Console.WriteLine(bl);
+                                    return bl;
+                                }
                             }
-                            break;
-                        }
-                        else if (location == "0")
-                        {
-                            break;
                         }
                     }
-                    Console.WriteLine("Invalid Location/Location Doesn't Exist!");
+                    Console.WriteLine("Invalid Name/Location Doesn't Exist!");
                 }
                 catch (FormatException ex)
                 {
                     Console.WriteLine(ex.Message);
-                    Console.WriteLine("Invalid Input!!");
+                    Console.WriteLine("Invalid Input!");
                 }
             }
         }
@@ -404,32 +451,42 @@ namespace SafeEntryAppThingyAssignment
                 else
                 {
                     Person p = SearchPerson(pList, name);
-                    Console.WriteLine("Which Location are you checking-in to?");
-                    DisplayBusinessLocation(blList);
-                    Console.Write("Enter Business Location (Enter 0 to Exit): ");
-                    string locationname = Console.ReadLine();
-                    if (locationname == "0")
+                    if (p == null)
                     {
-                        return null;
                     }
-                    foreach (BusinessLocation bl in blList)
+                    else
                     {
-                        if (bl.BusinessName == locationname)
+                        Console.WriteLine("Which Location are you checking-in to?");
+                        DisplayBusinessLocation(blList);
+                        Console.Write("Enter Business Location (Enter 0 to Exit): ");
+                        string locationname = Console.ReadLine();
+                        if (locationname == "0")
                         {
-                            bool full = bl.IsFull();
-                            if (full == false)
+                            return null;
+                        }
+                        foreach (BusinessLocation bl in blList)
+                        {
+                            if (bl.BusinessName == locationname)
                             {
-                                p.AddSafeEntry(new SafeEntry(DateTime.Now, bl));
-                                bl.VisitorsNow += 1;
-                                Console.WriteLine("Successfully Checked-in at {0}!", locationname);
-                                return p;
+                                bool full = bl.IsFull();
+                                if (full == false)
+                                {
+                                    p.AddSafeEntry(new SafeEntry(DateTime.Now, bl));
+                                    bl.VisitorsNow += 1;
+                                    Console.WriteLine("Successfully Checked-in at {0}!", locationname);
+                                    return p;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Place is Full!");
+                                    return null;
+                                }
                             }
                         }
-                        Console.WriteLine("Invalid Name/Location!");
-                        Console.WriteLine("Please Re-Enter");
                     }
+                    Console.WriteLine("Invalid Name/Location!");
+                    Console.WriteLine("Please Re-Enter");
                 }
-                return null;
             }
         }
 
@@ -456,41 +513,57 @@ namespace SafeEntryAppThingyAssignment
                     else
                     {
                         Person p = SearchPerson(pList, name);
-                        for (int i = 0; i < p.SafeEntryList.Count; i++)
+                        if (p == null)
                         {
-                            if (p.SafeEntryList.Count == 0)
+                            return null;
+                        }
+                        else if (p.SafeEntryList.Count == 0)
+                        {
+                            Console.WriteLine("There is no SafeEntry Record!");
+                            return null;
+                        }
+                        else
+                        {
+                            int i = 0;
+                            foreach (SafeEntry se in p.SafeEntryList)
                             {
-                                Console.WriteLine("There is no SafeEntry Record!");
-                                return null;
+                                i++;
+                                Console.WriteLine("[{0}] {1}", i, se);
+                            }
+                            Console.Write("Enter number to check-out: ");
+                            int number = Convert.ToInt32(Console.ReadLine());
+                            SafeEntry s = p.SafeEntryList[number - 1];
+                            if (s.CheckOut == new DateTime(1, 1, 1))
+                            {
+                                s.CheckOut = DateTime.Now;
+                                Console.WriteLine("Successfully Checked-out!");
+                                s.PerformCheckOut();
+                                return s;
                             }
                             else
                             {
-                                Console.WriteLine(p.SafeEntryList[i]);
+                                Console.WriteLine("You have already checked-out from here");
+                                return null;
                             }
                         }
-                        Console.Write("Enter Record in the format dd/mm/yyyy: ");
-                        DateTime record = Convert.ToDateTime(Console.ReadLine());
-                        foreach (SafeEntry s in p.SafeEntryList)
-                        {
-                            Console.WriteLine("Successfully Checked-out!");
-                            s.PerformCheckOut();
-                            return s;
-                        }
-                        return null;
                     }
                 }
                 catch (FormatException ex)
                 {
                     Console.WriteLine(ex.Message);
                     Console.WriteLine("Invalid Record/Input!");
-                } 
-                
+                }
+                catch (ArgumentOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Invalid Record/Input!");
+                }
             }
         }
 
         //10) Method to List all SHN Facilities
-        static void DisplaySHNFacilities(List<SHNFacility> shnList) 
-        {            
+        static void DisplaySHNFacilities(List<SHNFacility> shnList)
+        {
             foreach (SHNFacility shn in shnList)
             {
                 Console.WriteLine(shn.ToString());
@@ -508,28 +581,32 @@ namespace SafeEntryAppThingyAssignment
             {
                 Console.Write("Enter Name (Be mindful of capitalization. Enter 0 to exit option): ");
                 string name = Console.ReadLine();
-                if(name =="0")
+                if (name == "0")
                 {
                     return null;
                 }
                 Console.Write("Enter Passport No (Be mindful of capitalization. Enter 0 to exit option): ");
                 string passport = Console.ReadLine();
-                if(passport == "0")
+                if (passport == "0")
                 {
                     return null;
                 }
                 Console.Write("Enter Nationality (Be mindful of capitalization. Enter 0 to exit option): ");
                 string nationality = Console.ReadLine();
-                if (passport == "0")
+                if (nationality == "0")
                 {
                     return null;
                 }
-                foreach (Visitor v in pList)
+                foreach (Person p in pList)
                 {
-                    if (passport == v.PassportNo)
+                    if (p is Visitor)
                     {
-                        Console.WriteLine("Person Already Exists!");
-                        Console.WriteLine("Please Re-Enter");
+                        Visitor v = (Visitor)p;
+                        if (passport == v.PassportNo)
+                        {
+                            Console.WriteLine("Person Already Exists!");
+                            Console.WriteLine("Please Re-Enter");
+                        }
                     }
                 }
                 Console.WriteLine("Succesfully Created!");
@@ -553,13 +630,17 @@ namespace SafeEntryAppThingyAssignment
         {
             while (true)
             {
-                Console.Write("Enter Name ((Be mindful of capitalization. Enter 0 to exit option): ");
+                Console.Write("Enter Name (Be mindful of capitalization. Enter 0 to exit option): ");
                 string name = Console.ReadLine();
-                if(name == "0")
+                if (name == "0")
                 {
                     return null;
-                }    
+                }
                 Person p = SearchPerson(pList, name);
+                if (p == null)
+                {
+                    return null;
+                }
                 Console.Write("Enter your last country of embarkation (Be mindful of capitalization. Enter 0 to exit option): ");
                 string last_country = Console.ReadLine();
                 if (last_country == "0")
@@ -587,32 +668,26 @@ namespace SafeEntryAppThingyAssignment
                         }
                         foreach (SHNFacility shn in shnList)
                         {
-                            while (true)
+                            if (shn.FacilityName == f_name)
                             {
-                                if (shn.FacilityName == f_name)
+                                bool available = shn.IsAvailable();
+                                if (available == true)
                                 {
-                                    bool available = shn.IsAvailable();
-                                    if (available)
-                                    {
-                                        t.AssignSHNFacility(shn);
-                                        break;
-
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Invalid Name!");
-                                        Console.WriteLine("Please Re-Enter");
-                                    }
+                                    t.AssignSHNFacility(shn);
+                                    Console.WriteLine("Facility Assigned.");
+                                    return null;
                                 }
                                 else
+                                {
                                     Console.WriteLine("Facility Not Available!");
+                                    return null;
+                                }
                             }
                         }
-                        p.AddTravelEntry(t);
-                        break;
+                        Console.WriteLine("Invalid Name!");
+                        Console.WriteLine("Please Re-Enter");
                     }
                 }
-                return null;
             }
         }
 
@@ -642,77 +717,98 @@ namespace SafeEntryAppThingyAssignment
                 if (p is Visitor)
                 {
                     Visitor v = (Visitor)p;
+
                     foreach (TravelEntry te in v.TravelEntryList)
                     {
-                        bool paid = te.IsPaid;
-                        if (paid)
+                        te.CalculateSHNDuration();
+                        if (te.EntryDate == new DateTime(1, 1, 1))
                         {
-                            Console.WriteLine("Charges are Already Paid!");
-                            break;
+                            Console.WriteLine("No TravelEntry information found!");
                         }
                         else
                         {
-                            if (te.ShnEndDate < DateTime.Now)
+                            bool paid = te.IsPaid;
+                            if (paid)
                             {
-                                Console.WriteLine(v.TravelEntryList[0]);
-                                if ((te.ShnEndDate - te.EntryDate).TotalDays == 14)
-                                {
-                                    foreach (SHNFacility shn in shnList)
-                                    {
-                                        double charge = v.CalculateSHNCharges() + shn.CalculateTravelCost(te.EntryMode, te.EntryDate);
-                                        Console.WriteLine("Please make Payment of {0}", charge);
-                                    }
-                                }
+                                Console.WriteLine("Charges are Already Paid!");
+                                break;
                             }
                             else
                             {
-                                Console.WriteLine(v.TravelEntryList[0]);
-                                double charge = v.CalculateSHNCharges();
-                                Console.WriteLine("Please make Payment of {0}", charge);
+                                if (te.ShnEndDate < DateTime.Now)
+                                {
+                                    Console.WriteLine(te);
+                                    double charge = v.CalculateSHNCharges();
+                                    if (te.ShnStay is null)
+                                    {
+                                        Console.WriteLine("Please make Payment of {0}", Math.Round(charge, 2));
+                                    }
+                                    else
+                                    {
+                                        charge = charge + te.ShnStay.CalculateTravelCost(te.EntryMode, te.EntryDate);
+                                        Console.WriteLine("Please make Payment of {0}", Math.Round(charge, 2));
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine(te);
+                                    double charge = v.CalculateSHNCharges();
+                                    Console.WriteLine("Please make Payment of {0}", Math.Round(charge, 2));
+                                }
                             }
+                            te.IsPaid = true;
                         }
-                        te.IsPaid = true;
                     }
                 }
-                else
+                else if (p is Resident)
                 {
                     Resident r = (Resident)p;
                     foreach (TravelEntry te in r.TravelEntryList)
                     {
-                        bool paid = te.IsPaid;
-                        if (paid)
+                        te.CalculateSHNDuration();
+                        if (te.EntryDate == new DateTime(1, 1, 1))
                         {
-                            Console.WriteLine("Charges are Already Paid!");
+                            Console.WriteLine("No TravelEntry information found!");
                         }
                         else
                         {
-                            if (te.ShnEndDate < DateTime.Now)
+                            bool paid = te.IsPaid;
+                            if (paid)
                             {
-                                Console.WriteLine(r.TravelEntryList[0]);
-                                if ((te.ShnEndDate - te.EntryDate).TotalDays == 14)
-                                {
-                                    foreach (SHNFacility shn in shnList)
-                                    {
-                                        double charge = r.CalculateSHNCharges() + shn.CalculateTravelCost(te.EntryMode, te.EntryDate);
-                                        Console.WriteLine("Please make Payment of {0}", charge);
-                                    }
-                                }
+                                Console.WriteLine("Charges are Already Paid!");
                             }
                             else
                             {
-                                Console.WriteLine(r.TravelEntryList[0]);
-                                double charge = r.CalculateSHNCharges();
-                                Console.WriteLine("Please make Payment of {0}", charge);
+                                if (te.ShnEndDate < DateTime.Now)
+                                {
+                                    Console.WriteLine(te);
+                                    double charge = r.CalculateSHNCharges();
+                                    if (te.ShnStay is null)
+                                    {
+                                        Console.WriteLine("Please make Payment of {0}", Math.Round(charge, 2));
+                                    }
+                                    else
+                                    {
+                                        charge = charge + te.ShnStay.CalculateTravelCost(te.EntryMode, te.EntryDate);
+                                        Console.WriteLine("Please make Payment of {0}", Math.Round(charge, 2));
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine(te);
+                                    double charge = r.CalculateSHNCharges();
+                                    Console.WriteLine("Please make Payment of {0}", Math.Round(charge, 2));
+                                }
                             }
+                            te.IsPaid = true;
                         }
-                        te.IsPaid = true;
                     }
                 }
             }
         }
-        
+
         // Method to create and display menu
-        
+
         static string DisplayMenu()
         {
             Console.WriteLine("---------------- MENU ----------------" +
@@ -733,15 +829,20 @@ namespace SafeEntryAppThingyAssignment
             string option = Console.ReadLine();
             return option;
         }
+        /*
+        3.ADVANCED FEATURES
+              You are required to do all the advanced features below.
+                3.1 Contact Tracing Reporting
+                • Given a date/time and business name, generate a list of persons that are checked-in at that location and period.
+                • Export a CSV with details of their visit (e.g., check-in time, check-out time)
+                3.2 SHN Status Reporting
+                • Given a date, generate a csv report of all travellers serving their SHN, their SHN end date, and where they are serving their SHN.
+                3.3 Other Possible Features
+                • You may gain up to 5 bonus marks if you propose and successfully implement an additionalfeature. Check with your tutor with your idea before implementing.*/
+
+        static void ContactTracing()
+        {
+
+        }
     }
 }
-/*
-3.ADVANCED FEATURES
-      You are required to do all the advanced features below.
-        3.1 Contact Tracing Reporting
-        • Given a date/time and business name, generate a list of persons that are checked-in at that location and period.
-        • Export a CSV with details of their visit (e.g., check-in time, check-out time)
-        3.2 SHN Status Reporting
-        • Given a date, generate a csv report of all travellers serving their SHN, their SHN end date, and where they are serving their SHN.
-        3.3 Other Possible Features
-        • You may gain up to 5 bonus marks if you propose and successfully implement an additionalfeature. Check with your tutor with your idea before implementing.*/

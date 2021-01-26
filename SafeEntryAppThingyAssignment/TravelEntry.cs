@@ -69,8 +69,8 @@ namespace SafeEntryAppThingyAssignment
 
         public override string ToString()
         {
-            return base.ToString() + "\tLast Country Of Embarkation: " + LastCountryOfEmbarkation + "\tEntry Mode: " + EntryMode
-                + "\tEntry Date: " + EntryDate + "\tSHN End Date: " + ShnEndDate + "\tSHN Location: " + ShnStay + "\tPaid?: " + IsPaid;
+            return "Last Country Of Embarkation: " + LastCountryOfEmbarkation + "   \tEntry Mode: " + EntryMode
+                + "   \tEntry Date: " + EntryDate + "   \tSHN End Date: " + ShnEndDate + "   \tSHN Location: " + ShnStay + "   \tPaid?: " + IsPaid;
         }
     }
 }

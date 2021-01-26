@@ -38,7 +38,7 @@ namespace SafeEntryAppThingyAssignment
             {
                 if (t.EntryDate == te.EntryDate)
                 {
-                    Console.WriteLine("Person Already Exists, unable to add to list");
+                    Console.WriteLine("Person Already Exists, unable to add to TravelEntry list");
                     found = true;
                 }
             }
