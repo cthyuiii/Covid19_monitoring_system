@@ -170,38 +170,23 @@ namespace SafeEntryAppThingyAssignment
                 DateTime travelEntryDate = new DateTime();
                 DateTime travelShnEndDate = new DateTime();
                 bool travelIsPaid = new bool();
-                if (String.IsNullOrEmpty(lastLeftCountry1))
-                {
-                }
-                else
+                if (!String.IsNullOrEmpty(lastLeftCountry1))
                 {
                     lastLeftCountry = Convert.ToDateTime(lastLeftCountry1);
                 }
-                if (String.IsNullOrEmpty(tokenExpiryDate1))
-                {
-                }
-                else
+                if (!String.IsNullOrEmpty(tokenExpiryDate1))
                 {
                     tokenExpiryDate = Convert.ToDateTime(tokenExpiryDate1);
                 }
-                if (String.IsNullOrEmpty(travelEntryDate1))
-                {
-                }
-                else
+                if (!String.IsNullOrEmpty(travelEntryDate1))
                 {
                     travelEntryDate = Convert.ToDateTime(travelEntryDate1);
                 }
-                if (String.IsNullOrEmpty(travelShnEndDate1))
-                {
-                }
-                else
+                if (!String.IsNullOrEmpty(travelShnEndDate1))
                 {
                     travelShnEndDate = Convert.ToDateTime(travelShnEndDate1);
                 }
-                if (String.IsNullOrEmpty(travelIsPaid1))
-                {
-                }
-                else
+                if (!String.IsNullOrEmpty(travelIsPaid1))
                 {
                     travelIsPaid = Convert.ToBoolean(travelIsPaid1);
                 }
@@ -276,6 +261,8 @@ namespace SafeEntryAppThingyAssignment
             Console.Write("Enter Name (Be mindful of capitalization. Enter 0 to exit option): ");
             string name = Console.ReadLine();
             Person p = SearchPerson(pList, name);
+            Console.WriteLine("\nPeron's Details are as follows, do note 'FALSE' indicates No and vice versa for True. " +
+                "\n\nDates set to 01/01/0001 at 12am are empty dates.\n");
             Console.WriteLine(p);
             foreach (SafeEntry se in p.SafeEntryList)
             {
@@ -884,7 +871,7 @@ namespace SafeEntryAppThingyAssignment
                     if (start > end)
                     {
                         Console.WriteLine("Error, End Date earlier than Start Date!");
-                        return null;
+                        Console.WriteLine("Please Re-Enter!");
                     }
                     Console.Write("Enter Business Name (Enter 0 to exit option): ");
                     string name = Console.ReadLine();
@@ -923,6 +910,7 @@ namespace SafeEntryAppThingyAssignment
                         }
                     }
                     Console.WriteLine("No records found/Invalid Business Name");
+                    Console.WriteLine("Please Re-Enter!");
                 }
                 catch (FormatException)
                 {
@@ -955,7 +943,7 @@ namespace SafeEntryAppThingyAssignment
                     if (start > end)
                     {
                         Console.WriteLine("Error, End Date earlier than Start Date!");
-                        return null;
+                        Console.WriteLine("Please Re-Enter!");
                     }
                     foreach (Person p in pList)
                     {
@@ -987,6 +975,7 @@ namespace SafeEntryAppThingyAssignment
                         }
                     }
                     Console.WriteLine("Records Written in csv");
+                    Console.WriteLine("Please Re-Enter!");
                 }
                 catch (FormatException)
                 {
