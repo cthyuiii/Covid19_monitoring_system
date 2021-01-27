@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -57,6 +58,7 @@ namespace SafeEntryAppThingyAssignment
 
             InitDataPerson(personList, shnList);
 
+
             while (true)
             {
                 string option = DisplayMenu();
@@ -103,6 +105,14 @@ namespace SafeEntryAppThingyAssignment
                 else if (option == "11")
                 {
                     CheckSHNCharges(personList, shnList);
+                }
+                else if (option == "12")
+                {
+                    ContactTracing(personList, businesslocationList);
+                }
+                else if (option == "13")
+                {
+                    SHNStatusReporting(personList);
                 }
                 else if (option == "0")
                 {
@@ -464,6 +474,15 @@ namespace SafeEntryAppThingyAssignment
                         {
                             return null;
                         }
+                        foreach (SafeEntry se in p.SafeEntryList)
+                        {
+                            if (se.Location.BusinessName == locationname)
+                            {
+                                p.SafeEntryList.Remove(se);
+                                se.Location.VisitorsNow -= 1;
+                                break;
+                            }
+                        }
                         foreach (BusinessLocation bl in blList)
                         {
                             if (bl.BusinessName == locationname)
@@ -823,6 +842,8 @@ namespace SafeEntryAppThingyAssignment
                     "\n[9] Create Visitor" +
                     "\n[10] Create TravelEntry Record" +
                     "\n[11] Calculate SHN Charges" +
+                    "\n[12] Contact Tracing Reporting" +
+                    "\n[13] SHN Status Reporting" +
                     "\n[0] Exit" +
                     "\n-------------------------------------");
             Console.Write("Enter your option: ");
@@ -840,9 +861,139 @@ namespace SafeEntryAppThingyAssignment
                 3.3 Other Possible Features
                 • You may gain up to 5 bonus marks if you propose and successfully implement an additionalfeature. Check with your tutor with your idea before implementing.*/
 
-        static void ContactTracing()
+        static Person ContactTracing(List<Person> pList, List<BusinessLocation> blList)
         {
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter DateTime of start period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+                    string start1 = Console.ReadLine().ToString();
+                    if (start1 == "0")
+                    {
+                        return null;
+                    }
+                    DateTime start = Convert.ToDateTime(start1);
+                    Console.Write("Enter DateTime of end period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+                    string end1 = Console.ReadLine().ToString();
+                    if (end1 == "0")
+                    {
+                        return null;
+                    }
+                    DateTime end = Convert.ToDateTime(end1);
+                    if (start > end)
+                    {
+                        Console.WriteLine("Error, End Date earlier than Start Date!");
+                        return null;
+                    }
+                    Console.Write("Enter Business Name (Enter 0 to exit option): ");
+                    string name = Console.ReadLine();
+                    if (name == "0")
+                    {
+                        return null;
+                    }
+                    foreach (Person p in pList)
+                    {
+                        foreach (SafeEntry se in p.SafeEntryList)
+                        {
+                            if (se.CheckIn >= start && se.CheckIn <= end)
+                            {
+                                if (se.Location.BusinessName == name)
+                                {
+                                    Console.WriteLine(p);
+                                    if (File.Exists("ContactTracing.csv") == false)
+                                    {
+                                        string text = "Record," + "Name," + "Check-In Time," + "Check-Out Time," + "Location Name";
+                                        File.AppendAllText("ContactTracing.csv", text);
+                                    }
+                                    if (se.CheckOut == new DateTime(1, 1, 1))
+                                    {
+                                        string info = "\n" + DateTime.Now.ToString() + "," + p.Name + "," + se.CheckIn.ToString() + "," + "null" + "," + name;
+                                        File.AppendAllText("ContactTracing.csv", info);
+                                    }
+                                    else
+                                    {
+                                        string info = "\n" + DateTime.Now.ToString() + "," + p.Name + "," + se.CheckIn.ToString() + "," + se.CheckOut.ToString() + "," + name;
+                                        File.AppendAllText("ContactTracing.csv", info);
+                                    }
+                                    Console.WriteLine("Records Written in csv");
+                                    return p;
+                                }
+                            }
+                        }
+                    }
+                    Console.WriteLine("No records found/Invalid Business Name");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid Input Given");
+                    Console.WriteLine("Please Re-Enter!");
+                }
+            }
+        }
 
+        static SHNFacility SHNStatusReporting(List<Person> pList)
+        {
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter DateTime of start period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+                    string start1 = Console.ReadLine().ToString();
+                    if (start1 == "0")
+                    {
+                        return null;
+                    }
+                    DateTime start = Convert.ToDateTime(start1);
+                    Console.Write("Enter DateTime of end period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+                    string end1 = Console.ReadLine().ToString();
+                    if (end1 == "0")
+                    {
+                        return null;
+                    }
+                    DateTime end = Convert.ToDateTime(end1);
+                    if (start > end)
+                    {
+                        Console.WriteLine("Error, End Date earlier than Start Date!");
+                        return null;
+                    }
+                    foreach (Person p in pList)
+                    {
+                        if (p.TravelEntryList.Count == 0)
+                        {
+                            continue;
+                        }
+                        foreach (TravelEntry te in p.TravelEntryList)
+                        {
+                            if (te.EntryDate >= start && te.EntryDate <= end)
+                            {
+                                if (File.Exists("SHNStatus.csv") == false)
+                                {
+                                    string text = "Record," + "Name," + "SHN End Date," + "SHN Stay,";
+                                    File.AppendAllText("SHNStatus.csv", text);
+                                }
+                                te.CalculateSHNDuration();
+                                if (te.ShnStay is null)
+                                {
+                                    string info = "\n" + DateTime.Now.ToString() + "," + p.Name + "," + te.ShnEndDate.ToString() + "," + "null";
+                                    File.AppendAllText("SHNStatus.csv", info);
+                                }
+                                else
+                                {
+                                    string info = "\n" + DateTime.Now.ToString() + "," + p.Name + "," + te.ShnEndDate.ToString() + "," + te.ShnStay.FacilityName;
+                                    File.AppendAllText("SHNStatus.csv", info);
+                                }
+                            }
+                        }
+                    }
+                    Console.WriteLine("Records Written in csv");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid Input Given");
+                    Console.WriteLine("Please Re-Enter!");
+                }
+            }
         }
     }
 }
