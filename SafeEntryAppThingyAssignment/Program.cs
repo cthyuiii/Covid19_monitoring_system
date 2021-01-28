@@ -1142,14 +1142,14 @@ namespace SafeEntryAppThingyAssignment
                         Console.WriteLine(p);
                         if (File.Exists("Vaccine.csv") == false)
                         {
-                            string text = "Name," + "Vaccinated" + "Record.No," + "Vaccine Name," + "Vaccine Center," + "Time";
+                            string text = "Name," + "Vaccinated" + "Medical Reference No.," + "Vaccine Name," + "Vaccine Center," + "Time";
                             File.AppendAllText("Vaccine.csv", text);
-                            string info = "\n" + p.Name + "," + answer + "," + vaccinename + "," + centername + "," + start;
+                            string info = "\n" + p.Name + "," + answer + "," + number + "," + vaccinename + "," + centername + "," + start;
                             File.AppendAllText("Vaccine.csv", info);
                         }
                         else
                         {
-                            string info = "\n" + p.Name + "," + answer + "," + vaccinename + "," + centername + "," + start;
+                            string info = "\n" + p.Name + "," + answer + "," + number + "," + vaccinename + "," + centername + "," + start;
                             File.AppendAllText("Vaccine.csv", info);
                         }
                         Console.WriteLine("Records Written in csv");
