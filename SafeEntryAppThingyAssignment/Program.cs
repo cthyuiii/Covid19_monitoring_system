@@ -663,7 +663,14 @@ namespace SafeEntryAppThingyAssignment
                 {
                     return null;
                 }
-                p.AddTravelEntry(new TravelEntry(last_country, entry_mode, DateTime.Now));
+                Console.Write("Enter Date and Time of your entry period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+                string end1 = Console.ReadLine().ToString();
+                if (end1 == "0")
+                {
+                    return null;
+                }               
+                DateTime end = Convert.ToDateTime(end1);
+                p.AddTravelEntry(new TravelEntry(last_country, entry_mode, end));
                 foreach (TravelEntry t in p.TravelEntryList)
                 {
                     t.CalculateSHNDuration();
@@ -859,14 +866,14 @@ namespace SafeEntryAppThingyAssignment
             {
                 try
                 {
-                    Console.Write("Enter DateTime of start period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+                    Console.Write("Enter Date and Time of start period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
                     string start1 = Console.ReadLine().ToString();
                     if (start1 == "0")
                     {
                         return null;
                     }
                     DateTime start = Convert.ToDateTime(start1);
-                    Console.Write("Enter DateTime of end period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+                    Console.Write("Enter Date and Time of end period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
                     string end1 = Console.ReadLine().ToString();
                     if (end1 == "0")
                     {
@@ -932,14 +939,14 @@ namespace SafeEntryAppThingyAssignment
             {
                 try
                 {
-                    Console.Write("Enter DateTime of start period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+                    Console.Write("Enter Date and Time of start period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
                     string start1 = Console.ReadLine().ToString();
                     if (start1 == "0")
                     {
                         return null;
                     }
                     DateTime start = Convert.ToDateTime(start1);
-                    Console.Write("Enter DateTime of end period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+                    Console.Write("Enter Date and Time of end period (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
                     string end1 = Console.ReadLine().ToString();
                     if (end1 == "0")
                     {
