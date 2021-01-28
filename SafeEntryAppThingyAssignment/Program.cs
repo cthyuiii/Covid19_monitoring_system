@@ -114,6 +114,10 @@ namespace SafeEntryAppThingyAssignment
                 {
                     SHNStatusReporting(personList);
                 }
+                else if (option == "14")
+                {
+                    VaccinatedList(personList);
+                }
                 else if (option == "0")
                 {
                     break;
@@ -831,6 +835,7 @@ namespace SafeEntryAppThingyAssignment
                     "\n[11] Calculate SHN Charges" +
                     "\n[12] Contact Tracing Reporting" +
                     "\n[13] SHN Status Reporting" +
+                    "\n[14] Vaccinatated Reporting" +
                     "\n[0] Exit" +
                     "\n-------------------------------------");
             Console.Write("Enter your option: ");
@@ -912,8 +917,9 @@ namespace SafeEntryAppThingyAssignment
                     Console.WriteLine("No records found/Invalid Business Name");
                     Console.WriteLine("Please Re-Enter!");
                 }
-                catch (FormatException)
+                catch (FormatException ex)
                 {
+                    Console.WriteLine(ex.Message);
                     Console.WriteLine("Invalid Input Given");
                     Console.WriteLine("Please Re-Enter!");
                 }
@@ -977,12 +983,133 @@ namespace SafeEntryAppThingyAssignment
                     Console.WriteLine("Records Written in csv");
                     Console.WriteLine("Please Re-Enter!");
                 }
-                catch (FormatException)
+                catch (FormatException ex)
                 {
+                    Console.WriteLine(ex.Message);
                     Console.WriteLine("Invalid Input Given");
                     Console.WriteLine("Please Re-Enter!");
                 }
             }
         }
+
+
+        static Person VaccinatedList(List<Person> pList)
+        {
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Enter your name (Be mindful of capitalization. Enter 0 to exit option): ");
+
+                    string name = Console.ReadLine();
+
+                    if (name == "0")
+                    {
+                        return null;
+                    }
+                    Person p = SearchPerson(pList, name);
+
+                    Console.WriteLine("Have you been Vaccinated? (Y/N) (Enter 0 to exit):");
+
+                    string answer = Console.ReadLine();
+
+                    if (answer == "N")
+                    {
+                        Console.WriteLine("Please be vaccinated before confirming List Slot");
+                        return null;
+                    }
+
+                    if (answer == "0")
+                    {
+                        return null;
+                    }
+
+                    Console.WriteLine("Enter the Medical Reference Number on your vaccination slip (Enter 0 to exit): ");
+
+                    string number = Console.ReadLine();
+
+                    if (number == "0")
+                    {
+                        return null;
+                    }
+
+                    Console.WriteLine("Enter the name of the vaccination center you have been (Be mindful of capitalization. Enter 0 to exit option): ");
+
+                    string centername = Console.ReadLine();
+
+                    if (centername == "0")
+                    {
+                        return null;
+                    }
+
+                    Console.WriteLine("Enter the name of the vaccine you were dosed (Pfizer BioNTech Vaccine : Pfizer)" +
+                        "\n(Moderna Vaccine: Moderna) \n(AstraZeneca UK Vaccine: AstraZeneca) \n(Johnson & Johnson Vaccine: J&J) \n(Enter 0 to exit): ");
+
+                    string vaccinename = Console.ReadLine();
+
+                    if (vaccinename == "0")
+                    {
+                        return null;
+                    }
+
+                    if (vaccinename != "J&J")
+                    {
+                        Console.WriteLine("Have you had your second dose? (Y/N)");
+
+                        string answer2 = Console.ReadLine();
+
+                        if (answer2 == "N")
+                        {
+                            Console.WriteLine("Please have your second dose to be fully vaccinated before confirming List Slot");
+                            return null;
+                        }
+                    }
+
+                    Console.Write("Enter the Date and Time of your vaccination (dd/MM/yyyy HH:mm) (Enter 0 to exit option): ");
+
+                    string vacstart = Console.ReadLine().ToString();
+
+                    if (vacstart == "0")
+                    {
+                        return null;
+                    }
+
+                    DateTime start = Convert.ToDateTime(vacstart);
+
+                    if (start > DateTime.Now)
+                    {
+                        Console.WriteLine("Error, End Date earlier than Start Date!");
+                        Console.WriteLine("Please Re-Enter!");
+                    }
+
+                    p.AddVaccine(new Vaccine(answer, number, vaccinename, centername, start));
+
+                    foreach (Vaccine v in p.VaccineList)
+                    {
+
+                        Console.WriteLine(p);
+                        if (File.Exists("Vaccine.csv") == false)
+                        {
+                            string text = "Name," + "Vaccinated" + "Record.No," + "Vaccine Name," + "Vaccine Center," + "Time";
+                            File.AppendAllText("Vaccine.csv", text);
+                        }
+                        else
+                        {
+                            string info = "\n" + p.Name + "," + answer + "," + number + "," + vaccinename + "," + centername + "," + start;
+                            File.AppendAllText("Vaccine.csv", info);
+                        }
+                        Console.WriteLine("Records Written in csv");
+                        return p;
+                    }
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Invalid Input Given");
+                    Console.WriteLine("Please Re-Enter!");
+                }
+        }
     }
 }
+}
+

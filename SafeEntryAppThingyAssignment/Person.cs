@@ -15,6 +15,8 @@ namespace SafeEntryAppThingyAssignment
 
         public List<TravelEntry> TravelEntryList = new List<TravelEntry>();
 
+        public List<Vaccine> VaccineList = new List<Vaccine>();
+
         public Person()
         {
 
@@ -67,6 +69,24 @@ namespace SafeEntryAppThingyAssignment
             if (found == false)
             {
                 SafeEntryList.Add(s);
+            }
+
+        }
+
+        public void AddVaccine(Vaccine v)
+        {
+            bool found = false;
+            foreach (Vaccine va in VaccineList)
+            {
+                if (v.mrn == v.mrn) // if person exists
+                {
+                    Console.WriteLine("Person Already Exists, unable to add to list");
+                    found = true;
+                }
+            }
+            if (found == false)
+            {
+                VaccineList.Add(v);
             }
 
         }
