@@ -1030,10 +1030,7 @@ namespace SafeEntryAppThingyAssignment
                         return null;
                     }
                     Person p = SearchPerson(pList, name);
-                    if (p == null)
-                    {
-                        return null;
-                    }
+                    
                     Console.Write("Have you been Vaccinated? (Y/N) (Enter 0 to exit): ");
 
                     string answer = Console.ReadLine();
