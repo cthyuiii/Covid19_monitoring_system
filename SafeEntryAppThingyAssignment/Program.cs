@@ -1115,8 +1115,8 @@ namespace SafeEntryAppThingyAssignment
                     Console.WriteLine("Invalid Input Given");
                     Console.WriteLine("Please Re-Enter!");
                 }
+            }
         }
     }
-}
 }
 
