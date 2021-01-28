@@ -265,16 +265,31 @@ namespace SafeEntryAppThingyAssignment
             Console.Write("Enter Name (Be mindful of capitalization. Enter 0 to exit option): ");
             string name = Console.ReadLine();
             Person p = SearchPerson(pList, name);
-            Console.WriteLine("\nPeron's Details are as follows, do note 'FALSE' indicates No and vice versa for True. " +
-                "\n\nDates set to 01/01/0001 at 12am are empty dates.\n");
             Console.WriteLine(p);
             foreach (SafeEntry se in p.SafeEntryList)
             {
-                Console.WriteLine(se);
+                if (se.CheckOut == new DateTime(1, 1, 1))
+                {
+                    Console.WriteLine("Check-In Time: {0}   Check-Out Time: Null   Location: {1}",
+                        se.CheckIn, se.Location);
+                }
+                else
+                {
+                    Console.WriteLine(se);
+                }
             }
             foreach (TravelEntry te in p.TravelEntryList)
             {
-                Console.WriteLine(te);
+                if (te.EntryDate == new DateTime(1, 1, 1))
+                {
+                    Console.WriteLine("Last Country Of Embarkation: {0}   Entry Mode: {1}   Entry Date: Null" +
+                        "   SHN End Date: Null   SHN Location: Null   Paid?: Null",
+                        te.LastCountryOfEmbarkation, te.EntryMode);
+                }
+                else
+                {
+                    Console.WriteLine(te);
+                }
             }
         }
 
@@ -1006,7 +1021,7 @@ namespace SafeEntryAppThingyAssignment
             {
                 try
                 {
-                    Console.WriteLine("Enter your name (Be mindful of capitalization. Enter 0 to exit option): ");
+                    Console.Write("Enter your name (Be mindful of capitalization. Enter 0 to exit option): ");
 
                     string name = Console.ReadLine();
 
@@ -1015,8 +1030,11 @@ namespace SafeEntryAppThingyAssignment
                         return null;
                     }
                     Person p = SearchPerson(pList, name);
-
-                    Console.WriteLine("Have you been Vaccinated? (Y/N) (Enter 0 to exit):");
+                    if (p == null)
+                    {
+                        return null;
+                    }
+                    Console.Write("Have you been Vaccinated? (Y/N) (Enter 0 to exit): ");
 
                     string answer = Console.ReadLine();
 
@@ -1031,16 +1049,23 @@ namespace SafeEntryAppThingyAssignment
                         return null;
                     }
 
-                    Console.WriteLine("Enter the Medical Reference Number on your vaccination slip (Enter 0 to exit): ");
+                    if (answer != "Y")
+                    {
+                        Console.WriteLine("Invalid Input!");
+                        return null;
+                    }
+                    Console.Write("Enter the Medical Reference Number on your vaccination slip (Enter 0 to exit): ");
 
-                    string number = Console.ReadLine();
+                    int number1 = Convert.ToInt32(Console.ReadLine());
+
+                    string number = number1.ToString();
 
                     if (number == "0")
                     {
                         return null;
                     }
 
-                    Console.WriteLine("Enter the name of the vaccination center you have been (Be mindful of capitalization. Enter 0 to exit option): ");
+                    Console.Write("Enter the name of the vaccination center you have been (Be mindful of capitalization. Enter 0 to exit option): ");
 
                     string centername = Console.ReadLine();
 
@@ -1049,7 +1074,13 @@ namespace SafeEntryAppThingyAssignment
                         return null;
                     }
 
-                    Console.WriteLine("Enter the name of the vaccine you were dosed (Pfizer BioNTech Vaccine : Pfizer)" +
+                    if (centername == "")
+                    {
+                        Console.WriteLine("Invalid Input!");
+                        return null;
+                    }
+
+                    Console.Write("Enter the name of the vaccine you were dosed (Pfizer BioNTech Vaccine : Pfizer)" +
                         "\n(Moderna Vaccine: Moderna) \n(AstraZeneca UK Vaccine: AstraZeneca) \n(Johnson & Johnson Vaccine: J&J) \n(Enter 0 to exit): ");
 
                     string vaccinename = Console.ReadLine();
@@ -1059,15 +1090,28 @@ namespace SafeEntryAppThingyAssignment
                         return null;
                     }
 
+                    if (vaccinename != "Pfizer" && vaccinename != "Moderna" && vaccinename != "AstraZeneca" && vaccinename != "J&J")
+                    {
+                        Console.WriteLine(vaccinename);
+                        Console.WriteLine("Invalid Input Given!");
+                        return null;
+                    }
+
                     if (vaccinename != "J&J")
                     {
-                        Console.WriteLine("Have you had your second dose? (Y/N)");
+                        Console.Write("Have you had your second dose? (Y/N): ");
 
                         string answer2 = Console.ReadLine();
 
                         if (answer2 == "N")
                         {
                             Console.WriteLine("Please have your second dose to be fully vaccinated before confirming List Slot");
+                            return null;
+                        }
+
+                        if (answer2 != "Y")
+                        {
+                            Console.WriteLine("Invalid Input!");
                             return null;
                         }
                     }
@@ -1087,6 +1131,7 @@ namespace SafeEntryAppThingyAssignment
                     {
                         Console.WriteLine("Error, End Date earlier than Start Date!");
                         Console.WriteLine("Please Re-Enter!");
+                        return null;
                     }
 
                     p.AddVaccine(new Vaccine(answer, number, vaccinename, centername, start));
@@ -1099,10 +1144,12 @@ namespace SafeEntryAppThingyAssignment
                         {
                             string text = "Name," + "Vaccinated" + "Record.No," + "Vaccine Name," + "Vaccine Center," + "Time";
                             File.AppendAllText("Vaccine.csv", text);
+                            string info = "\n" + p.Name + "," + answer + "," + vaccinename + "," + centername + "," + start;
+                            File.AppendAllText("Vaccine.csv", info);
                         }
                         else
                         {
-                            string info = "\n" + p.Name + "," + answer + "," + number + "," + vaccinename + "," + centername + "," + start;
+                            string info = "\n" + p.Name + "," + answer + "," + vaccinename + "," + centername + "," + start;
                             File.AppendAllText("Vaccine.csv", info);
                         }
                         Console.WriteLine("Records Written in csv");
