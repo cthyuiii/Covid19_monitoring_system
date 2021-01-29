@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 namespace SafeEntryAppThingyAssignment
@@ -260,12 +261,20 @@ namespace SafeEntryAppThingyAssignment
             i. if resident, display TraceTogetherToken details
         */
 
-        static void DisplayPerson(List<Person> pList)
+        static Person DisplayPerson(List<Person> pList)
         {
             Console.Write("Enter Name (Be mindful of capitalization. Enter 0 to exit option): ");
             string name = Console.ReadLine();
+            if (name == "0")
+            {
+                return null;
+            }
             Person p = SearchPerson(pList, name);
             Console.WriteLine(p);
+            if (p == null)
+            {
+                return null;
+            }
             foreach (SafeEntry se in p.SafeEntryList)
             {
                 if (se.CheckOut == new DateTime(1, 1, 1))
@@ -291,6 +300,7 @@ namespace SafeEntryAppThingyAssignment
                     Console.WriteLine(te);
                 }
             }
+            return p;
         }
 
         static Person SearchPerson(List<Person> pList, string name)
