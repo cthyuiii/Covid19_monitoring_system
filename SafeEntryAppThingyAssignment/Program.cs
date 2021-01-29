@@ -490,15 +490,6 @@ namespace SafeEntryAppThingyAssignment
                         {
                             return null;
                         }
-                        foreach (SafeEntry se in p.SafeEntryList)
-                        {
-                            if (se.Location.BusinessName == locationname)
-                            {
-                                p.SafeEntryList.Remove(se);
-                                se.Location.VisitorsNow -= 1;
-                                break;
-                            }
-                        }
                         foreach (BusinessLocation bl in blList)
                         {
                             if (bl.BusinessName == locationname)
